@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "kind": "dict-pack",
+  "id": "demo.dict",
+  "version": "1.0.0",
+  "name": "演示名称表（合成）",
+  "author": "kojo-market CI 冒烟",
+  "license": "CC0-1.0（合成演示内容，可自由再配布）",
+  "redistribute": true,
+  "sourceUrl": "https://github.com/Poboking/kojo-market",
+  "summary": "market v1 端到端冒烟用合成名称表，无真实游戏文本",
+  "minAppVersion": "0.4.0",
+  "gameId": "eraTW",
+  "files": [
+    {
+      "path": "files/names.csv",
+      "bytes": 77,
+      "sha256": "b30503e40825f405271c642f320a634b6d926bdc3d18a8b1665dfded578ee5a9"
+    }
+  ]
+}

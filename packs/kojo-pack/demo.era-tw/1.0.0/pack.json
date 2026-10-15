@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "kind": "kojo-pack",
+  "id": "demo.era-tw",
+  "version": "1.0.0",
+  "name": "演示口上包（合成）",
+  "author": "kojo-market CI 冒烟",
+  "license": "CC0-1.0（合成演示内容，可自由再配布）",
+  "redistribute": true,
+  "sourceUrl": "https://github.com/Poboking/kojo-market",
+  "summary": "market v1 端到端冒烟用合成口上包，无真实游戏文本",
+  "minAppVersion": "0.4.0",
+  "gameId": "eraTW",
+  "files": [
+    {
+      "path": "files/M_KOJO_K900_DEMO.ERB",
+      "bytes": 368,
+      "sha256": "3f2fb31f24e4615c9674a4c380013e44ea910ff7efb690de36528d777316e92a"
+    }
+  ]
+}
