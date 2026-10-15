@@ -175,6 +175,14 @@ function collect(root) {
     if (prev) kindOfId.set(m.id, prev); else kindOfId.set(m.id, m.kind);
     packs.push(m);
   }
+  const seenVer = new Map();
+  for (const m of packs) {
+    const norm = `${m.id}#${m.version.split('.').map((s) => String(Number(s))).join('.')}`;
+    const prev = seenVer.get(norm);
+    if (prev && prev !== m.version)
+      errors.push(`${m.id}: 版本 "${prev}" 与 "${m.version}" 数值相同（前导零歧义）——「同 id 取最高版本」无法确定，请写规范形`);
+    seenVer.set(norm, m.version);
+  }
   packs.sort((a, b) => a.kind !== b.kind ? (a.kind < b.kind ? -1 : 1) : a.id !== b.id ? (a.id < b.id ? -1 : 1) : cmpVer(a.version, b.version));
   return { packs, errors };
 }
