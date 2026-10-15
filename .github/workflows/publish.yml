@@ -7,10 +7,16 @@ on:
   pull_request:
   workflow_dispatch:
 
+# 部署路（b 系）：发布源永远是 legacy 分支 gh-pages —— 不改 build_type、不改 source、不建 Pages。
+# contents:write = 推 gh-pages；pages:write 只干一件事：POST /pages/builds 请求一次构建。
+#   官方文档明确「由 GITHUB_TOKEN 推送的提交不会触发 GitHub Pages 生成」
+#   （docs.github.com/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site）
+#   ⇒ branch push 之后必须显式请求构建，否则站点永远停在旧内容。这条 API 省不掉。
+# 不用 configure-pages/upload-pages-artifact/deploy-pages ⇒ 不需要 id-token:write，
+# 也永不把 build_type 翻成 workflow（翻了之后 POST /pages/builds 永拒，不可回退）。
 permissions:
   contents: write
   pages: write
-  id-token: write
 
 concurrency:
   group: registry-${{ github.ref }}
@@ -29,95 +35,161 @@ jobs:
         run: node scripts/market.mjs validate packs
 
   publish:
-    name: 发布 zip 资产 + 生成 index.json
+    name: 发布 zip 资产 + 生成 index.json + 推 gh-pages
     if: github.event_name != 'pull_request'
     needs: validate
     runs-on: ubuntu-latest
     env:
       GH_REPO: ${{ github.repository }}
+      PAGES_URL: https://poboking.github.io/kojo-market
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          # 全历史：generatedAt 要锚在「最后一个能改变索引内容的提交」上，不是 HEAD
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: validate（重算一次，防发布 job 与校验 job 看到不同内容）
         run: node scripts/market.mjs validate packs
+
+      - name: 内容锚点（索引里 generatedAt 的唯一时间源）
+        id: anchor
+        run: |
+          set -euo pipefail
+          # packs/**（内容）+ scripts/**（出索引的代码）+ .gitattributes（决定 checkout 字节）
+          # 之外的提交（含改本 workflow、README）不得改变索引字节 —— 这样重复 run 才可能零副作用
+          A="$(git log -1 --format=%cI "$GITHUB_SHA" -- packs scripts .gitattributes)"
+          [ -n "$A" ] || A="$(git show -s --format=%cI "$GITHUB_SHA")"
+          echo "锚点 = 最后一个内容/工具链提交的 commit date: $A"
+          {
+            echo "date=$A"
+            echo "iso=$(node -e 'const d=new Date(process.argv[1]);if(Number.isNaN(d.getTime()))process.exit(1);process.stdout.write(d.toISOString())' "$A")"
+          } >> "$GITHUB_OUTPUT"
+
       - name: 逐包版本发布 / 复用 zip 资产（同 tag 已存在则不覆盖）
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p dist/assets dist/facts dist/pages
+          mkdir -p dist/assets dist/published dist/facts dist/pages
           : > dist/facts/facts.jsonl
           node scripts/market.mjs plan packs > dist/plan.tsv
           wc -l < dist/plan.tsv | xargs -I{} echo "计划发布 {} 个包版本"
           while IFS=$'\t' read -r kind id version rel tag asset; do
-            a="dist/assets/$asset"
+            z="dist/assets/$asset"          # 本地确定性重算（zip 时间戳钉死 1980-01-01，不看 mtime）
+            p="dist/published/$asset"       # 远端真实资产（匿名下载，客户端就是这么拉的）
+            node scripts/market.mjs zip packs "$rel" "$z" >/dev/null
             ref="https://api.github.com/repos/$GH_REPO/git/ref/tags/$tag"
             if gh api "$ref" >/dev/null 2>&1; then
-              echo "tag $tag 已存在 -> 复用不可变资产"
-              url="$(gh api "repos/$GH_REPO/releases/tags/$tag" --jq ".assets[] | select(.name == \"$asset\") | .browser_download_url")"
-              [ -n "$url" ] || { echo "FAIL tag $tag 存在但没有资产 $asset（release 被删过，请人工处理）"; exit 1; }
+              echo "tag $tag 已存在 -> 复用不可变资产（不建 release、不传资产、不动 tag）"
             else
-              node scripts/market.mjs zip packs "$rel" "$a" >/dev/null
-              gh release create "$tag" "$a" \
+              echo "tag $tag 不存在 -> 新建 release + 上传资产（--target 本次 commit）"
+              gh release create "$tag" "$z" \
                 --target "$GITHUB_SHA" \
                 --title "$id v$version" \
                 --notes "$kind \`$id\` \`$version\` —— 由 CI 自动发布。zip 根部 = pack.json + files/**，明文在 \`packs/$rel/\`。" \
                 --latest=false
-              url="$(gh api "repos/$GH_REPO/releases/tags/$tag" --jq ".assets[] | select(.name == \"$asset\") | .browser_download_url")"
-              [ -n "$url" ] || { echo "FAIL 刚建的 release $tag 查不到资产 $asset"; exit 1; }
             fi
-            # 一律从远端读回真实资产：匿名 HTTP GET（客户端就是这么拉的），并作为 sha256 的事实源
-            curl --fail --silent --show-error --location --output "$a" "$url" \
+            url="$(gh api "repos/$GH_REPO/releases/tags/$tag" --jq ".assets[] | select(.name == \"$asset\") | .browser_download_url")"
+            [ -n "$url" ] || { echo "FAIL release $tag 查不到资产 $asset（release 被删过 / 资产被换名，请人工处理）"; exit 1; }
+            curl --fail --silent --show-error --location --output "$p" "$url" \
               || { echo "FAIL 匿名下载失败 $url"; exit 1; }
+            # 不可变硬闸：远端资产必须与本地按同一规则重算的 zip 逐字节全等
+            cmp "$p" "$z" \
+              || { echo "FAIL $asset 远端资产 != 本地重算 zip：已发布内容被改动 / 上传被截断"; exit 1; }
+            echo "immutable ok: $asset 远端资产 == 本地重算 zip（$(wc -c < "$p") 字节）"
             # 内容类硬闸：资产里的 pack.json + files/** 必须与仓库声明逐字节一致
-            node scripts/market.mjs verify packs "$rel" "$a" > "dist/facts/line.tsv"
+            node scripts/market.mjs verify packs "$rel" "$p" > "dist/facts/line.tsv"
             printf '{"kind":"%s","id":"%s","version":"%s","url":"%s","sha256":"%s","bytes":%s}\n' \
               "$kind" "$id" "$version" "$url" "$(cut -f2 dist/facts/line.tsv)" "$(cut -f1 dist/facts/line.tsv)" \
               >> dist/facts/facts.jsonl
           done < dist/plan.tsv
           cat dist/facts/facts.jsonl
-      - name: 生成 index.json（并自证字节稳定：重跑 + 事实乱序都必须逐字节相同）
+
+      - name: 生成 index.json + deploy.json（三条断言任一红 => run 红）
+        env:
+          ANCHOR: ${{ steps.anchor.outputs.date }}
+          ISO: ${{ steps.anchor.outputs.iso }}
         run: |
           set -euo pipefail
-          D="$(git show -s --format=%cI "$GITHUB_SHA")"
-          node scripts/market.mjs index packs dist/facts/facts.jsonl dist/pages/index.json --commit-date "$D"
-          node scripts/market.mjs index packs dist/facts/facts.jsonl dist/pages/rerun.json  --commit-date "$D"
+          [ -n "$ANCHOR" ] && [ -n "$ISO" ] || { echo "FAIL 内容锚点为空"; exit 1; }
+          node scripts/market.mjs index packs dist/facts/facts.jsonl dist/pages/index.json --commit-date "$ANCHOR"
+          node scripts/market.mjs index packs dist/facts/facts.jsonl dist/pages/rerun.json  --commit-date "$ANCHOR"
           sort -r dist/facts/facts.jsonl > dist/facts/facts.rev.jsonl
-          node scripts/market.mjs index packs dist/facts/facts.rev.jsonl dist/pages/rev.json --commit-date "$D"
-          cmp dist/pages/index.json dist/pages/rerun.json || { echo "FAIL index.json 字节不稳定（同输入重跑）"; exit 1; }
-          cmp dist/pages/index.json dist/pages/rev.json  || { echo "FAIL index.json 受事实输入顺序影响"; exit 1; }
+          node scripts/market.mjs index packs dist/facts/facts.rev.jsonl dist/pages/rev.json --commit-date "$ANCHOR"
+          cmp dist/pages/index.json dist/pages/rerun.json || { echo "FAIL 断言1：同输入重跑 index.json 字节不同"; exit 1; }
+          cmp dist/pages/index.json dist/pages/rev.json  || { echo "FAIL 断言2：index.json 受事实输入顺序影响"; exit 1; }
+          grep -qF "\"generatedAt\": \"$ISO\"" dist/pages/index.json \
+            || { echo "FAIL 断言3：generatedAt 没有锚在内容提交（$ISO）上，字节稳定判据不成立"; exit 1; }
+          echo "断言 1/2/3 全绿（重跑全等 / 乱序全等 / 时间戳锚定）"
           rm dist/pages/rerun.json dist/pages/rev.json dist/facts/facts.rev.jsonl
-          sha256sum dist/pages/index.json
-      - name: 确保 Pages 源为 GitHub Actions（历史 branch 源时一次性切回）
+          # deploy.json = 部署见证：内容只由 index.json 决定（无 run id / 无 HEAD sha）=> 同索引重复 run 必为 no-op
+          H="$(sha256sum dist/pages/index.json | cut -d' ' -f1)"
+          B="$(wc -c < dist/pages/index.json | tr -d ' ')"
+          printf '{"schema":1,"engine":"github-pages-legacy:gh-pages","anchor":"%s","indexBytes":%s,"indexSha256":"%s"}\n' \
+            "$ISO" "$B" "$H" > dist/pages/deploy.json
+          sha256sum dist/pages/index.json dist/pages/deploy.json
+
+      - name: 推 gh-pages（内容相同 => 零提交零 API；真推了才请求 Pages 构建）
+        id: deploy
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -uo pipefail
-          bt="$(gh api "repos/$GH_REPO/pages" --jq .build_type 2>/dev/null || echo none)"
-          echo "当前 Pages build_type=$bt"
-          if [ "$bt" != "workflow" ]; then
-            gh api -X PUT "repos/$GH_REPO/pages" -f build_type=workflow >/dev/null \
-              || gh api -X POST "repos/$GH_REPO/pages" -f build_type=workflow >/dev/null
-            echo "Pages build_type 已切到 workflow"
+          set -euo pipefail
+          git fetch --no-tags origin "+refs/heads/gh-pages:refs/remotes/origin/gh-pages"
+          base=origin/gh-pages
+          git rev-parse -q --verify "$base" >/dev/null || { echo "FAIL gh-pages 分支不存在（Pages legacy 源要求它在位）"; exit 1; }
+          ih="$(git hash-object -w dist/pages/index.json)"
+          dh="$(git hash-object -w dist/pages/deploy.json)"
+          ci="$(git rev-parse -q --verify "$base:index.json" || echo none)"
+          cd_="$(git rev-parse -q --verify "$base:deploy.json" || echo none)"
+          if [ "$ih" = "$ci" ] && [ "$dh" = "$cd_" ]; then
+            echo "幂等：gh-pages 上的 index.json / deploy.json 与本次产物 blob 全等 -> 不提交、不推送、不碰 Pages API"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
-          gh api "repos/$GH_REPO/pages" --jq '{build_type,source,html_url}'
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist/pages
+          echo "待写 blob: index.json=$ih（远端现为 $ci） deploy.json=$dh（远端现为 $cd_）"
+          # 只用 plumbing 组一个 commit，绝不碰 master 工作树
+          xidx="$(mktemp -u)"
+          GIT_INDEX_FILE="$xidx" git read-tree "$base"
+          GIT_INDEX_FILE="$xidx" git update-index --add --cacheinfo "100644,$ih,index.json" --cacheinfo "100644,$dh,deploy.json"
+          tree="$(GIT_INDEX_FILE="$xidx" git write-tree)"
+          rm -f "$xidx"
+          commit="$(git -c user.name='github-actions[bot]' \
+            -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit-tree "$tree" -p "$base" \
+            -m "deploy(gh-pages): index.json @ master $(git log -1 --format=%h "$GITHUB_SHA")（CI 生成，字节稳定）")"
+          git push origin "$commit:refs/heads/gh-pages"
+          echo "已推 gh-pages commit=$commit"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+          # build_type 必须是 legacy：被翻成 workflow 之后 POST /pages/builds 永拒，且这条路回不去
+          bt="$(gh api "repos/$GH_REPO/pages" --jq .build_type || echo unreachable)"
+          echo "当前 Pages build_type=$bt"
+          [ "$bt" = legacy ] || { echo "FAIL Pages build_type=$bt（期望 legacy）：发布源被改过，请人工定夺，CI 不自动翻源"; exit 1; }
+          # GITHUB_TOKEN 推的提交不触发 Pages 构建（官方文档）=> 显式请求一次，只请求，不改配置
+          gh api -X POST "repos/$GH_REPO/pages/builds" --silent >/dev/null
+          echo "已 POST /pages/builds 请求构建"
 
-  deploy:
-    name: 部署 Pages
-    if: github.event_name != 'pull_request'
-    needs: publish
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: 匿名读回判据（站点字节 == 本次 CI 产物字节）
+        env:
+          PUSHED: ${{ steps.deploy.outputs.pushed }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist/readback
+          # 没推过东西 => 站点本来就该是最新，一次判；推过 => 等 Pages 构建（CDN max-age=600，给到 ~7min）
+          tries=1
+          if [ "$PUSHED" = true ]; then tries=28; fi
+          for f in index.json deploy.json; do
+            hit=no
+            i=1
+            while [ "$i" -le "$tries" ]; do
+              code="$(curl --noproxy '*' --silent --show-error --location \
+                --output "dist/readback/$f" --write-out '%{http_code}' "$PAGES_URL/$f" || echo 000)"
+              if [ "$code" = 200 ] && cmp -s "dist/readback/$f" "dist/pages/$f"; then hit=yes; break; fi
+              i=$((i + 1)); sleep 15
+            done
+            [ "$hit" = yes ] || { echo "FAIL $f 读回不合格：http=$code 且/或与 CI 产物字节不同（tries=$tries）"; exit 1; }
+            printf '%s 匿名读回 http=%s bytes=%s sha256=%s\n' "$f" "$code" \
+              "$(wc -c < "dist/readback/$f" | tr -d ' ')" "$(sha256sum < "dist/readback/$f" | cut -d' ' -f1)"
+          done
