@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-10-15T13:09:22.000Z",
+  "packs": [
+    {
+      "kind": "dict-pack",
+      "id": "demo.dict",
+      "version": "1.0.0",
+      "name": "演示名称表（合成）",
+      "author": "kojo-market CI 冒烟",
+      "license": "CC0-1.0（合成演示内容，可自由再配布）",
+      "summary": "market v1 端到端冒烟用合成名称表，无真实游戏文本",
+      "minAppVersion": "0.4.0",
+      "gameId": "eraTW",
+      "sourceUrl": "https://github.com/Poboking/kojo-market",
+      "zip": {
+        "url": "https://github.com/Poboking/kojo-market/releases/download/demo.dict-v1.0.0/demo.dict-1.0.0.zip",
+        "sha256": "94b7d7a2f2161877084a43f07ed487e6365f874926fc0aef4fe122af8922f684",
+        "bytes": 709
+      },
+      "fileCount": 1,
+      "unpackedBytes": 77
+    },
+    {
+      "kind": "kojo-pack",
+      "id": "demo.era-tw",
+      "version": "1.0.1",
+      "name": "演示口上包（合成）",
+      "author": "kojo-market CI 冒烟",
+      "license": "CC0-1.0（合成演示内容，可自由再配布）",
+      "summary": "market v1 端到端冒烟用合成口上包，无真实游戏文本",
+      "minAppVersion": "0.4.0",
+      "gameId": "eraTW",
+      "sourceUrl": "https://github.com/Poboking/kojo-market",
+      "zip": {
+        "url": "https://github.com/Poboking/kojo-market/releases/download/demo.era-tw-v1.0.1/demo.era-tw-1.0.1.zip",
+        "sha256": "bf0bfd9f321666ba60ee6f12a03cfd64f709658121c300f4b09454d40dc7aef2",
+        "bytes": 1051
+      },
+      "fileCount": 1,
+      "unpackedBytes": 471
+    }
+  ]
+}
