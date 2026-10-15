@@ -1,0 +1,123 @@
+name: publish
+run-name: publish ${{ github.ref_name }} @${{ github.sha }}
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: registry-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: 合规校验（结构 / 字段 / 逐文件 sha256 重算）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: validate
+        run: node scripts/market.mjs validate packs
+
+  publish:
+    name: 发布 zip 资产 + 生成 index.json
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    env:
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: validate（重算一次，防发布 job 与校验 job 看到不同内容）
+        run: node scripts/market.mjs validate packs
+      - name: 逐包版本发布 / 复用 zip 资产（同 tag 已存在则不覆盖）
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist/assets dist/facts dist/pages
+          : > dist/facts/facts.jsonl
+          node scripts/market.mjs plan packs > dist/plan.tsv
+          wc -l < dist/plan.tsv | xargs -I{} echo "计划发布 {} 个包版本"
+          while IFS=$'\t' read -r kind id version rel tag asset; do
+            a="dist/assets/$asset"
+            ref="https://api.github.com/repos/$GH_REPO/git/ref/tags/$tag"
+            if gh api "$ref" >/dev/null 2>&1; then
+              echo "tag $tag 已存在 -> 复用不可变资产"
+              url="$(gh api "repos/$GH_REPO/releases/tags/$tag" --jq ".assets[] | select(.name == \"$asset\") | .browser_download_url")"
+              [ -n "$url" ] || { echo "FAIL tag $tag 存在但没有资产 $asset（release 被删过，请人工处理）"; exit 1; }
+            else
+              node scripts/market.mjs zip packs "$rel" "$a" >/dev/null
+              gh release create "$tag" "$a" \
+                --target "$GITHUB_SHA" \
+                --title "$id v$version" \
+                --notes "$kind \`$id\` \`$version\` —— 由 CI 自动发布。zip 根部 = pack.json + files/**，明文在 \`packs/$rel/\`。" \
+                --latest=false
+              url="$(gh api "repos/$GH_REPO/releases/tags/$tag" --jq ".assets[] | select(.name == \"$asset\") | .browser_download_url")"
+              [ -n "$url" ] || { echo "FAIL 刚建的 release $tag 查不到资产 $asset"; exit 1; }
+            fi
+            # 一律从远端读回真实资产：匿名 HTTP GET（客户端就是这么拉的），并作为 sha256 的事实源
+            curl --fail --silent --show-error --location --output "$a" "$url" \
+              || { echo "FAIL 匿名下载失败 $url"; exit 1; }
+            # 内容类硬闸：资产里的 pack.json + files/** 必须与仓库声明逐字节一致
+            node scripts/market.mjs verify packs "$rel" "$a" > "dist/facts/line.tsv"
+            printf '{"kind":"%s","id":"%s","version":"%s","url":"%s","sha256":"%s","bytes":%s}\n' \
+              "$kind" "$id" "$version" "$url" "$(cut -f2 dist/facts/line.tsv)" "$(cut -f1 dist/facts/line.tsv)" \
+              >> dist/facts/facts.jsonl
+          done < dist/plan.tsv
+          cat dist/facts/facts.jsonl
+      - name: 生成 index.json（并自证字节稳定：重跑 + 事实乱序都必须逐字节相同）
+        run: |
+          set -euo pipefail
+          D="$(git show -s --format=%cI "$GITHUB_SHA")"
+          node scripts/market.mjs index packs dist/facts/facts.jsonl dist/pages/index.json --commit-date "$D"
+          node scripts/market.mjs index packs dist/facts/facts.jsonl dist/pages/rerun.json  --commit-date "$D"
+          sort -r dist/facts/facts.jsonl > dist/facts/facts.rev.jsonl
+          node scripts/market.mjs index packs dist/facts/facts.rev.jsonl dist/pages/rev.json --commit-date "$D"
+          cmp dist/pages/index.json dist/pages/rerun.json || { echo "FAIL index.json 字节不稳定（同输入重跑）"; exit 1; }
+          cmp dist/pages/index.json dist/pages/rev.json  || { echo "FAIL index.json 受事实输入顺序影响"; exit 1; }
+          rm dist/pages/rerun.json dist/pages/rev.json dist/facts/facts.rev.jsonl
+          sha256sum dist/pages/index.json
+      - name: 确保 Pages 源为 GitHub Actions（历史 branch 源时一次性切回）
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          bt="$(gh api "repos/$GH_REPO/pages" --jq .build_type 2>/dev/null || echo none)"
+          echo "当前 Pages build_type=$bt"
+          if [ "$bt" != "workflow" ]; then
+            gh api -X PUT "repos/$GH_REPO/pages" -f build_type=workflow >/dev/null \
+              || gh api -X POST "repos/$GH_REPO/pages" -f build_type=workflow >/dev/null
+            echo "Pages build_type 已切到 workflow"
+          fi
+          gh api "repos/$GH_REPO/pages" --jq '{build_type,source,html_url}'
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/pages
+
+  deploy:
+    name: 部署 Pages
+    if: github.event_name != 'pull_request'
+    needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
