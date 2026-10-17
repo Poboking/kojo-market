@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "kind": "kojo-pack",
+  "id": "kojotest007",
+  "version": "1.0.0",
+  "name": "东方口上集-博丽(测试）",
+  "author": "测试用户",
+  "license": "LTOL · 时限开放许可（era 社区）",
+  "redistribute": true,
+  "minAppVersion": "0.4.0",
+  "files": [
+    {
+      "path": "files/LICENSE",
+      "bytes": 3756,
+      "sha256": "0765145347e52609dd9967e611f000df0a1f173b3fbcad77283088fe8ff9ab8e"
+    },
+    {
+      "path": "files/README.md",
+      "bytes": 2243,
+      "sha256": "e67a78cfc48a1886fd04a8bc320a8baeedf88bdb33fabae51b468be80d01aee8"
+    },
+    {
+      "path": "files/事件.ERB",
+      "bytes": 1144,
+      "sha256": "071bbc87b8431524c4a47a7d69a339a5f2848d514ee34c8ecfb2de17b2fbfefa"
+    },
+    {
+      "path": "files/刻印取得.ERB",
+      "bytes": 1220,
+      "sha256": "c2937491808612ef113f2ab5d1d70590767c25a806bc4dec7c6bf55d379f40b7"
+    },
+    {
+      "path": "files/奉仕指令.ERB",
+      "bytes": 626,
+      "sha256": "7668b01c8dce27644c9dc4a45912beac17bba35994e74e47309bc7c38517e4ef"
+    },
+    {
+      "path": "files/性交指令.ERB",
+      "bytes": 626,
+      "sha256": "3f2f60d7350e298d7633f3ea576a00f02d9d673bd3e76b938cb78eb4a4024c04"
+    },
+    {
+      "path": "files/性骚扰指令.ERB",
+      "bytes": 1242,
+      "sha256": "3852a149637d6d098652a4efd276c2651baee2f63dd66defdea3ae2141050bdf"
+    },
+    {
+      "path": "files/日常指令.ERB",
+      "bytes": 1179,
+      "sha256": "4b7d2a34ff73fa593c50584f205cf121388a83aaa04b3c86ba30974c2640e6f7"
+    },
+    {
+      "path": "files/爱抚指令.ERB",
+      "bytes": 626,
+      "sha256": "a6790da5bceb8996543cd12e03fdc26d3f51679c53c7367bebb54b321c9335d9"
+    },
+    {
+      "path": "files/绝顶.ERB",
+      "bytes": 471,
+      "sha256": "48380833e5b84b16571bcec29cd1779a56a83c42ca52ff3dc1beb423d16c1a83"
+    }
+  ]
+}
