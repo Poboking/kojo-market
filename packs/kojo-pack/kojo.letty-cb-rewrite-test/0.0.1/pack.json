@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "kind": "kojo-pack",
+  "id": "kojo.letty-cb-rewrite-test",
+  "version": "0.0.1",
+  "name": "蕾蒂CB風口上 · .kojo 重写测试",
+  "author": "舩 弦五郎（原作）／kojo-editor 测试重写",
+  "license": "CC BY-NC 4.0 · 署名-非商业性使用",
+  "redistribute": true,
+  "summary": "真实语料《キャノボ風レティ》的 .kojo 语法重写测试包；每句台词末尾标记（此为测试文本）。原作：舩 弦五郎。",
+  "minAppVersion": "0.4.0",
+  "files": [
+    {
+      "path": "files/readme.txt",
+      "bytes": 2451,
+      "sha256": "a014d5024e4482bc1b471890456706cb9c9b44677af0706fec1dfccacfcfe300"
+    },
+    {
+      "path": "files/ライセンステンプレ.txt",
+      "bytes": 2900,
+      "sha256": "497a0532cb26a44f04b2bb12a4fe2357d2c6a689a81f685c0aa7ffb045c9eddc"
+    },
+    {
+      "path": "files/主口上.ERB",
+      "bytes": 43400,
+      "sha256": "6768ee87898acae2b352bb5bcd976ce25b621f63a23f81bd1658254e0d1f5579"
+    },
+    {
+      "path": "files/占位补充.ERB",
+      "bytes": 92185,
+      "sha256": "1e4cf5164ff457a8a9e62aa15e6c0cc6e06ac3f0552efe6f83de480f1da0d469"
+    }
+  ]
+}
