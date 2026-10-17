@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "kind": "kojo-pack",
+  "id": "kojo.pmv8ayzg3-qljc83.2",
+  "version": "1.0.0",
+  "name": "演示口上包（合成）（导入）",
+  "author": "用户007",
+  "license": "保留所有权利（未生成 LICENSE 文件）",
+  "redistribute": true,
+  "minAppVersion": "0.4.0",
+  "files": [
+    {
+      "path": "files/M_KOJO_K900_DEMO.ERB",
+      "bytes": 471,
+      "sha256": "7c7c606b7c5d3d9f69e10d135a69522592c18b9f1f24ffbbd2c9ee5aac3e0c41"
+    }
+  ]
+}
