@@ -74,13 +74,13 @@ jobs:
           # 可能还没有 hydrate 命令
           node scripts/market.mjs hydrate packs "$rel" dist/hydrate/pending.zip
           # 补全 commit 用 plumbing 直接组在真实 PR head 上——不切分支（checkout@v4 检的是
-          # refs/pull/N/merge，直接推会推回 merge commit；且 runner 上 status 扫描对新写出的
-          # 未跟踪文件不可靠）。GITHUB_TOKEN 推的提交不触发新 run，天然防循环。
+          # refs/pull/N/merge，直接推会推回 merge commit）。
+          # 注意 $rel 不含 packs/ 前缀（hydrate 的 root 参数是 packs），git 操作必须带上。
           git fetch origin "+refs/heads/$GITHUB_HEAD_REF:refs/remotes/origin/pr-head"
           xidx="$(mktemp -u)"
           GIT_INDEX_FILE="$xidx" git read-tree refs/remotes/origin/pr-head
-          GIT_INDEX_FILE="$xidx" git add "$rel/files"
-          if GIT_INDEX_FILE="$xidx" git diff --cached --quiet refs/remotes/origin/pr-head -- "$rel/files"; then
+          GIT_INDEX_FILE="$xidx" git add "packs/$rel/files"
+          if GIT_INDEX_FILE="$xidx" git diff --cached --quiet refs/remotes/origin/pr-head -- "packs/$rel/files"; then
             echo "补全后无新内容"
             rm -f "$xidx"
             exit 0
