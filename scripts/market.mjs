@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // kojo-market registry toolchain. Zero deps: node:crypto + node:zlib only.
-// subcommands: validate | list | plan | zip | verify | manifest | index | hash
+// subcommands: validate | list | plan | zip | verify | manifest | index | hash | hydrate
 
 import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync, lstatSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -378,6 +378,57 @@ if (cmd === 'hash') {
     writeFile(join(root, ...positional[1].split('/'), 'pack.json'), text);
     console.error(`stamp: ${files.length} 文件 / ${unpacked} 字节，sha256 已重算写入 pack.json`);
   } else process.stdout.write(text);
+} else if (cmd === 'hydrate') {
+  // CI 用：PR 只带 pack.json（Worker 10ms CPU 只做结构闸）时，从 R2 待审 zip 解包补全
+  // 明文树 + 数据级对账。判据与 verify 同款：条目集 == pack.json + files/**，
+  // zip 内 pack.json 与树内逐字节一致，逐文件 bytes/sha256 重算对拍后才落盘。
+  const root = positional[0] ?? 'packs';
+  const sel = positional[1] ?? '';
+  const segs = sel.split('/');
+  if (segs.length !== 3) fail([`hydrate: 需要 <kind/id/version>，收到 ${sel}`]);
+  const dir = join(root, ...segs);
+  let treePack;
+  try { treePack = readFileSync(join(dir, 'pack.json')); }
+  catch { fail([`hydrate: ${sel}/pack.json 不存在（PR 树里先要有 pack.json 才能补全）`]); }
+  const zip = readFileSync(positional[2]);
+  if (zip.length > MAX_ZIP_BYTES) fail([`hydrate: zip ${zip.length} > ${MAX_ZIP_BYTES}`]);
+  let entries;
+  try { entries = readZip(zip); } catch (e) { fail([`hydrate: zip 解析失败：${e.message}`]); }
+  let j;
+  try { j = JSON.parse(treePack.toString('utf8')); } catch (e) { fail([`hydrate: pack.json JSON 解析失败 ${e.message}`]); }
+  if (!Array.isArray(j.files)) fail([`hydrate: pack.json files 必须是数组`]);
+  const declared = new Map();
+  for (const f of j.files) {
+    if (f === null || typeof f !== 'object') fail([`hydrate: files 元素必须是对象`]);
+    const bad = pathViolations(f.path);
+    if (bad.length) fail(bad.map((m) => `hydrate: ${m}`));
+    if (declared.has(f.path)) fail([`hydrate: path 重复 ${f.path}`]);
+    if (!Number.isInteger(f.bytes) || f.bytes < 0) fail([`hydrate: ${f.path}: bytes 必须是非负整数`]);
+    if (typeof f.sha256 !== 'string' || !HEX64_RE.test(f.sha256)) fail([`hydrate: ${f.path}: sha256 必须是 64 位小写 hex`]);
+    declared.set(f.path, f);
+  }
+  const expect = ['pack.json', ...declared.keys()].sort();
+  const got = entries.map((e) => e.name).sort();
+  if (JSON.stringify(expect) !== JSON.stringify(got))
+    fail([`hydrate: zip 条目集不符：期望 pack.json + files/** 共 ${expect.length} 项，实际 ${got.length} 项 [${got.join(', ')}]`]);
+  let unpacked = 0;
+  let count = 0;
+  for (const e of entries) {
+    if (e.name === 'pack.json') {
+      if (!treePack.equals(e.data)) fail(['hydrate: zip 内 pack.json 与树内 pack.json 不一致：待审包与 PR 不同源，拒绝补全']);
+      continue;
+    }
+    const f = declared.get(e.name);
+    if (e.data.length !== f.bytes) fail([`hydrate: zip/${e.name}: bytes ${e.data.length} != 声明 ${f.bytes}`]);
+    const h = sha256(e.data);
+    if (h !== f.sha256) fail([`hydrate: zip/${e.name}: 内容 sha256 ${h} != manifest ${f.sha256}`]);
+    writeFile(join(root, ...segs, ...e.name.split('/')), e.data);
+    unpacked += e.data.length;
+    count++;
+  }
+  if (unpacked > MAX_UNPACKED_BYTES) fail([`hydrate: 解压后 ${unpacked} > ${MAX_UNPACKED_BYTES}`]);
+  console.error(`hydrate: ${sel} 补全 ${count} 文件 / ${unpacked} 字节（sha256 逐文件对账通过）`);
+  process.stdout.write(`${count}\t${unpacked}\t${sha256(zip)}\n`);
 } else if (cmd === 'index') {
   const root = positional[0] ?? 'packs';
   const factsPath = positional[1] ?? 'dist/facts.jsonl';
@@ -428,6 +479,7 @@ if (cmd === 'hash') {
   plan     [packs]   -> TSV: kind id version rel tag assetName
   zip      <packs> <kind/id/version|id@version> <out.zip>      -> bytes\\tsha256
   verify   <packs> <kind/id/version> <zip>         已发布资产一致性闸 -> bytes\\tsha256
+  hydrate  <packs> <kind/id/version> <zip>         PR 树补全：解包待审 zip + sha256 对账 -> count\\tbytes\\tsha256
   manifest <packs> <kind/id/version>               重算 sha256 后打到 stdout
   stamp    <packs> <kind/id/version>               同上，但写回 pack.json
   index    [packs] [facts.jsonl] [out.json] --commit-date <iso>

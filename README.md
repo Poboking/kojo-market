@@ -23,6 +23,13 @@
 
 体积闸：zip ≤ 64 MiB、解压后 ≤ 128 MiB、条目 ≤ 5000、符号链接一律拒绝。契约外的键不许进 `pack.json`。
 
+## 两条入库路径与分层校验
+
+1. **人工 PR**：明文全树直接进 PR，validate 一次跑完。
+2. **编辑器一键发布（kojo-market-worker 代理）**：Worker（CF 免费档，10ms CPU）只做结构级校验，开的 PR **只带 `pack.json`**（分支 `publish/<id>-<version>`），待审 zip 存 R2 `pending/`。CI 在 PR 阶段从 R2 拉回 zip（S3 API，只读 token），`market.mjs hydrate` 解包补全 `files/**` 明文树并做数据级对账——zip 内 pack.json 与树内逐字节一致 + 逐文件 bytes/sha256 重算对拍 + 容器 sha256 与 R2 meta 对拍——然后以 `github-actions[bot]` 推回 PR 分支（GITHUB_TOKEN 的提交不触发新 run，天然防循环）。validate 在完整树上照常跑；merge 后 master 自动完整，publish job 零特判。
+
+R2 凭据走注册表仓 secrets：`R2_ACCOUNT_ID` / `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`（token 权限 Object Read Only、限定桶）。
+
 ## 上架示例
 
 ```bash

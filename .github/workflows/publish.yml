@@ -31,6 +31,57 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: PR 补全明文树（R2 待审 zip -> hydrate -> 推回 PR 分支）
+        if: github.event_name == 'pull_request'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          AWS_DEFAULT_REGION: auto
+          AWS_EC2_METADATA_DISABLED: 'true'
+        run: |
+          set -euo pipefail
+          # 仅 publish/<id>-<version> 分支（Worker 开的 PR）才可能缺 files/；
+          # 分支不匹配 / files/ 已在（幂等重跑、人工 PR）-> 跳过补全，validate 原样跑
+          case "$GITHUB_HEAD_REF" in
+            publish/*-*) ;;
+            *) echo "分支 $GITHUB_HEAD_REF 非 publish/<id>-<version>，跳过补全"; exit 0;;
+          esac
+          sel="${GITHUB_HEAD_REF#publish/}"
+          id="${sel%-*}"; version="${sel##*-}"
+          packdir="$(ls -d packs/*/"$id"/"$version" 2>/dev/null | head -1 || true)"
+          [ -n "$packdir" ] || { echo "树内找不到 packs/*/$id/$version，跳过补全"; exit 0; }
+          if [ -d "$packdir/files" ]; then echo "files/ 已在 -> 幂等重跑 / 人工 PR，跳过补全"; exit 0; fi
+          [ -n "$R2_ACCOUNT_ID" ] || { echo "FAIL R2_ACCOUNT_ID 未配置（secrets 待补）"; exit 1; }
+          endpoint="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          prefix="pending/$id-$version-"
+          listing="$(aws s3api list-objects-v2 --endpoint-url "$endpoint" --bucket kojo-market --prefix "$prefix" --output json)"
+          zipkey="$(printf '%s' "$listing" | jq -r '[.Contents[]?.Key] | map(select(endswith(".zip"))) | sort | last // empty')"
+          [ -n "$zipkey" ] || { echo "FAIL R2 待审区找不到 $prefix*.zip"; exit 1; }
+          jsonkey="${zipkey%.zip}.json"
+          mkdir -p dist/hydrate
+          aws s3api get-object --endpoint-url "$endpoint" --bucket kojo-market --key "$zipkey" dist/hydrate/pending.zip > /dev/null
+          aws s3api get-object --endpoint-url "$endpoint" --bucket kojo-market --key "$jsonkey" dist/hydrate/pending.json > /dev/null
+          # 容器完整性接力闸：R2 meta 的 report.containerSha256 == 实际下载字节
+          actual="$(sha256sum dist/hydrate/pending.zip | cut -d' ' -f1)"
+          declared="$(jq -r '.report.containerSha256' dist/hydrate/pending.json)"
+          [ "$actual" = "$declared" ] || { echo "FAIL 容器 sha256 对拍不符：meta $declared / 实际 $actual"; exit 1; }
+          mid="$(jq -r '.manifest.id' dist/hydrate/pending.json)"
+          mver="$(jq -r '.manifest.version' dist/hydrate/pending.json)"
+          [ "$mid" = "$id" ] && [ "$mver" = "$version" ] || { echo "FAIL meta manifest $mid@$mver 与分支 $GITHUB_HEAD_REF 不符"; exit 1; }
+          rel="$(jq -r '.manifest.kind' dist/hydrate/pending.json)/$id/$version"
+          # checkout@v4 在 pull_request 下检的是 refs/pull/N/merge —— 补全 commit 必须落在真实 PR head 上，
+          # 否则推回的会是 merge commit。GITHUB_TOKEN 推的提交不触发新 run，天然防循环。
+          git fetch origin "+refs/heads/$GITHUB_HEAD_REF:refs/remotes/origin/pr-head"
+          git checkout -B ci-hydrate refs/remotes/origin/pr-head
+          node scripts/market.mjs hydrate packs "$rel" dist/hydrate/pending.zip
+          if [ -z "$(git status --porcelain -- "$rel/files")" ]; then echo "补全后无新内容"; exit 0; fi
+          git add "$rel/files"
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -m "ci(hydrate): 从 R2 待审 zip 补全 $rel 明文树（容器与逐文件 sha256 对账通过）"
+          git push origin "HEAD:refs/heads/$GITHUB_HEAD_REF"
+          echo "已推补全 commit 回 $GITHUB_HEAD_REF"
+
       - name: validate
         run: node scripts/market.mjs validate packs
 
