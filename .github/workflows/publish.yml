@@ -70,11 +70,14 @@ jobs:
           mver="$(jq -r '.manifest.version' dist/hydrate/pending.json)"
           [ "$mid" = "$id" ] && [ "$mver" = "$version" ] || { echo "FAIL meta manifest $mid@$mver 与分支 $GITHUB_HEAD_REF 不符"; exit 1; }
           rel="$(jq -r '.manifest.kind' dist/hydrate/pending.json)/$id/$version"
+          # hydrate 必须在切 PR head 之前跑：worker 开的分支基于旧 master，head 的 scripts/market.mjs
+          # 可能还没有 hydrate 命令。merge ref 检出的脚本是最新的；补出的 files/** 是未跟踪文件，
+          # 随后的 checkout 会原样带过去。
+          node scripts/market.mjs hydrate packs "$rel" dist/hydrate/pending.zip
           # checkout@v4 在 pull_request 下检的是 refs/pull/N/merge —— 补全 commit 必须落在真实 PR head 上，
           # 否则推回的会是 merge commit。GITHUB_TOKEN 推的提交不触发新 run，天然防循环。
           git fetch origin "+refs/heads/$GITHUB_HEAD_REF:refs/remotes/origin/pr-head"
           git checkout -B ci-hydrate refs/remotes/origin/pr-head
-          node scripts/market.mjs hydrate packs "$rel" dist/hydrate/pending.zip
           if [ -z "$(git status --porcelain -- "$rel/files")" ]; then echo "补全后无新内容"; exit 0; fi
           git add "$rel/files"
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
