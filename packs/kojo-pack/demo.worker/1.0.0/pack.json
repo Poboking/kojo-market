@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "kind": "kojo-pack",
+  "id": "demo.worker",
+  "version": "1.0.0",
+  "name": "Worker 冒烟包",
+  "author": "tester",
+  "license": "CC0-1.0",
+  "redistribute": true,
+  "minAppVersion": "0.4.0",
+  "files": [
+    {
+      "path": "files/hello.txt",
+      "bytes": 11,
+      "sha256": "acd94e786e805f7f214cb0ed157986342b49a3be07526cfe77f83b600f50ecb9"
+    },
+    {
+      "path": "files/sub/deep.txt",
+      "bytes": 7,
+      "sha256": "483e70361967a64d9adc37249341a53f7a1bb88d24204e77bdf621b1927aa451"
+    }
+  ]
+}
