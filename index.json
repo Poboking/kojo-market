@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-17T05:39:41.000Z",
+  "generatedAt": "2026-10-17T06:43:17.000Z",
   "packs": [
     {
       "kind": "dict-pack",
@@ -24,18 +24,18 @@
     {
       "kind": "kojo-pack",
       "id": "demo.era-tw",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "name": "演示口上包（合成）",
       "author": "kojo-market CI 冒烟",
       "license": "CC0-1.0（合成演示内容，可自由再配布）",
-      "summary": "market v1 端到端冒烟用合成口上包，无真实游戏文本",
+      "summary": "market v1 CI hydrate 全链路冒烟用合成口上包（v1.0.2），无真实游戏文本",
       "minAppVersion": "0.4.0",
       "gameId": "eraTW",
       "sourceUrl": "https://github.com/Poboking/kojo-market",
       "zip": {
-        "url": "https://github.com/Poboking/kojo-market/releases/download/demo.era-tw-v1.0.1/demo.era-tw-1.0.1.zip",
-        "sha256": "bf0bfd9f321666ba60ee6f12a03cfd64f709658121c300f4b09454d40dc7aef2",
-        "bytes": 1051
+        "url": "https://github.com/Poboking/kojo-market/releases/download/demo.era-tw-v1.0.2/demo.era-tw-1.0.2.zip",
+        "sha256": "a6ca640412a8943cf91012d2abb4b3caf696a13ddaca820ddc7832d6b50368e5",
+        "bytes": 1069
       },
       "fileCount": 1,
       "unpackedBytes": 471
