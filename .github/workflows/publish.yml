@@ -26,6 +26,9 @@ jobs:
   validate:
     name: 合规校验（结构 / 字段 / 逐文件 sha256 重算）
     runs-on: ubuntu-latest
+    outputs:
+      # master 存量补全会把 HEAD 推高一个提交；publish job 必须跟着这个提交走
+      sha: ${{ steps.repair.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -56,7 +59,8 @@ jobs:
           endpoint="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
           prefix="pending/$id-$version-"
           listing="$(aws s3api list-objects-v2 --endpoint-url "$endpoint" --bucket kojo-market --prefix "$prefix" --output json)"
-          zipkey="$(printf '%s' "$listing" | jq -r '[.Contents[]?.Key] | map(select(endswith(".zip"))) | sort | last // empty')"
+          # 前缀是 `<id>-<version>-`，还会命中「id 以 -<version> 结尾」的其他包；只认剩余部分是纯数字时间戳的 key
+          zipkey="$(printf '%s' "$listing" | jq -r --arg p "$prefix" '[.Contents[]?.Key] | map(select(startswith($p) and endswith(".zip"))) | map(select((ltrimstr($p) | test("^[0-9]+[.]zip$")))) | sort | last // empty')"
           [ -n "$zipkey" ] || { echo "FAIL R2 待审区找不到 $prefix*.zip"; exit 1; }
           jsonkey="${zipkey%.zip}.json"
           mkdir -p dist/hydrate
@@ -93,6 +97,83 @@ jobs:
           git push origin "$commit:refs/heads/$GITHUB_HEAD_REF"
           echo "已推补全 commit $commit 回 $GITHUB_HEAD_REF"
 
+      - name: master 存量补全（缺 files/ 的包从 R2 待审 / 归档 zip hydrate）
+        id: repair
+        if: github.event_name != 'pull_request'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          AWS_DEFAULT_REGION: auto
+          AWS_EC2_METADATA_DISABLED: 'true'
+        run: |
+          set -euo pipefail
+          emit_sha() { echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"; }
+          emit_sha
+          [ -n "${R2_ACCOUNT_ID:-}" ] && [ -n "${AWS_ACCESS_KEY_ID:-}" ] && [ -n "${AWS_SECRET_ACCESS_KEY:-}" ] \
+            || { echo "FAIL R2 secrets 未配置（R2_ACCOUNT_ID / R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY）"; exit 1; }
+          endpoint="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          mkdir -p dist/hydrate
+          hydrated=(); failed=()
+          while IFS= read -r packjson; do
+            d="$(dirname "$packjson")"
+            if [ -d "$d/files" ]; then continue; fi
+            rel="${d#packs/}"; rest="${rel#*/}"
+            id="${rest%%/*}"; version="${rest##*/}"
+            echo "== 缺 files/: $rel"
+            zipkey=""; jsonkey=""
+            # 1) 待审区：pending/<id>-<version>-<timestamp>.zip（时间戳最大的那份）
+            listing="$(aws s3api list-objects-v2 --endpoint-url "$endpoint" --bucket kojo-market --prefix "pending/$id-$version-" --output json 2>/dev/null || echo '{}')"
+            zipkey="$(printf '%s' "$listing" | jq -r --arg p "pending/$id-$version-" '[.Contents[]?.Key] | map(select(startswith($p) and endswith(".zip"))) | map(select((ltrimstr($p) | test("^[0-9]+[.]zip$")))) | sort | last // empty')"
+            if [ -n "$zipkey" ]; then jsonkey="${zipkey%.zip}.json"; fi
+            # 2) 归档区：webhook / cron 合并后可能已把待审 zip 搬到 packs/<id>-<version>.zip
+            if [ -z "$zipkey" ] && aws s3api head-object --endpoint-url "$endpoint" --bucket kojo-market --key "packs/$id-$version.zip" >/dev/null 2>&1; then
+              zipkey="packs/$id-$version.zip"; jsonkey="packs/$id-$version.json"
+            fi
+            if [ -z "$zipkey" ]; then echo "FAIL $rel: R2 pending/ 与归档 packs/ 都找不到原件"; failed+=("$rel"); continue; fi
+            echo "取原件 $zipkey"
+            z="dist/hydrate/$id-$version.zip"
+            aws s3api get-object --endpoint-url "$endpoint" --bucket kojo-market --key "$zipkey" "$z" >/dev/null
+            # meta 在就核容器摘要与身份；归档区 meta 由 webhook 写入，pending meta 由 /publish 写入
+            if aws s3api head-object --endpoint-url "$endpoint" --bucket kojo-market --key "$jsonkey" >/dev/null 2>&1; then
+              aws s3api get-object --endpoint-url "$endpoint" --bucket kojo-market --key "$jsonkey" dist/hydrate/meta.json >/dev/null
+              actual="$(sha256sum "$z" | cut -d' ' -f1)"
+              declared="$(jq -r '.report.containerSha256 // empty' dist/hydrate/meta.json)"
+              if [ -n "$declared" ] && [ "$actual" != "$declared" ]; then echo "FAIL $rel: 容器 sha256 不符 meta=$declared 实际=$actual"; failed+=("$rel"); continue; fi
+              mid="$(jq -r '.manifest.id // empty' dist/hydrate/meta.json)"
+              mver="$(jq -r '.manifest.version // empty' dist/hydrate/meta.json)"
+              if [ -n "$mid" ] && [ "$mid" != "$id" ]; then echo "FAIL $rel: meta manifest id=$mid 不匹配"; failed+=("$rel"); continue; fi
+              if [ -n "$mver" ] && [ "$mver" != "$version" ]; then echo "FAIL $rel: meta manifest version=$mver 不匹配"; failed+=("$rel"); continue; fi
+            else
+              echo "WARN $rel: 无 meta，跳过容器摘要对账（逐文件 sha256 仍会核）"
+            fi
+            if node scripts/market.mjs hydrate packs "$rel" "$z"; then hydrated+=("$rel"); else failed+=("$rel"); fi
+          done < <(find packs -mindepth 4 -maxdepth 4 -name pack.json -print | sort)
+
+          if [ "${#hydrated[@]}" -eq 0 ] && [ "${#failed[@]}" -eq 0 ]; then echo "无需补全：所有包都有 files/"; exit 0; fi
+          if [ "${#hydrated[@]}" -gt 0 ]; then
+            for rel in "${hydrated[@]}"; do git add "packs/$rel/files"; done
+            if git diff --cached --quiet; then
+              echo "补全后无新内容"
+            else
+              git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                commit -m "ci(hydrate): 从 R2 补全 ${#hydrated[@]} 个存量包明文树（逐文件 sha256 对账通过）"
+              n=0
+              until git push origin HEAD:master; do
+                n=$((n + 1)); [ "$n" -lt 3 ] || { echo "FAIL 推 master 三次均失败"; exit 1; }
+                git fetch origin master
+                git rebase origin/master
+              done
+              echo "已推补全提交 $(git rev-parse --short HEAD)"
+              emit_sha
+            fi
+          fi
+          if [ "${#failed[@]}" -gt 0 ]; then
+            echo "FAIL 下列包未能补全（原件缺失 / 对账不过）："
+            printf '  %s\n' "${failed[@]}"
+            exit 1
+          fi
+
       - name: validate
         run: node scripts/market.mjs validate packs
 
@@ -104,9 +185,12 @@ jobs:
     env:
       GH_REPO: ${{ github.repository }}
       PAGES_URL: https://poboking.github.io/kojo-market
+      # validate job 可能刚推了存量补全提交；发布、打 tag、锚点都跟这个提交走
+      TARGET_SHA: ${{ needs.validate.outputs.sha || github.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ needs.validate.outputs.sha || github.sha }}
           # 全历史：generatedAt 要锚在「最后一个能改变索引内容的提交」上，不是 HEAD
           fetch-depth: 0
       - uses: actions/setup-node@v4
@@ -121,8 +205,8 @@ jobs:
           set -euo pipefail
           # packs/**（内容）+ scripts/**（出索引的代码）+ .gitattributes（决定 checkout 字节）
           # 之外的提交（含改本 workflow、README）不得改变索引字节 —— 这样重复 run 才可能零副作用
-          A="$(git log -1 --format=%cI "$GITHUB_SHA" -- packs scripts .gitattributes)"
-          [ -n "$A" ] || A="$(git show -s --format=%cI "$GITHUB_SHA")"
+          A="$(git log -1 --format=%cI "$TARGET_SHA" -- packs scripts .gitattributes)"
+          [ -n "$A" ] || A="$(git show -s --format=%cI "$TARGET_SHA")"
           echo "锚点 = 最后一个内容/工具链提交的 commit date: $A"
           {
             echo "date=$A"
@@ -148,7 +232,7 @@ jobs:
             else
               echo "tag $tag 不存在 -> 新建 release + 上传资产（--target 本次 commit）"
               gh release create "$tag" "$z" \
-                --target "$GITHUB_SHA" \
+                --target "$TARGET_SHA" \
                 --title "$id v$version" \
                 --notes "$kind \`$id\` \`$version\` —— 由 CI 自动发布。zip 根部 = pack.json + files/**，明文在 \`packs/$rel/\`。" \
                 --latest=false
@@ -221,7 +305,7 @@ jobs:
           commit="$(git -c user.name='github-actions[bot]' \
             -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
             commit-tree "$tree" -p "$base" \
-            -m "deploy(gh-pages): index.json @ master $(git log -1 --format=%h "$GITHUB_SHA")（CI 生成，字节稳定）")"
+            -m "deploy(gh-pages): index.json @ master $(git log -1 --format=%h "$TARGET_SHA")（CI 生成，字节稳定）")"
           git push origin "$commit:refs/heads/gh-pages"
           echo "已推 gh-pages commit=$commit"
           echo "pushed=true" >> "$GITHUB_OUTPUT"

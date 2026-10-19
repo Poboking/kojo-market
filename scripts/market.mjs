@@ -12,6 +12,9 @@ const ID_RE = /^[a-z0-9][a-z0-9._-]{0,63}$/;
 const VER_RE = /^\d+\.\d+\.\d+$/;
 const HEX64_RE = /^[0-9a-f]{64}$/;
 const MAX_ZIP_BYTES = 64 * 1024 * 1024;
+// 编辑器 / Worker 上传硬限（十进制 95 MB，与 Worker MARKET_MAX_CONTAINER_UPLOAD_BYTES 对齐）。
+// MAX_ZIP_BYTES 是 CI 自打 release zip 的口径，两者不可混用。
+const MAX_UPLOAD_ZIP_BYTES = 95_000_000;
 const MAX_UNPACKED_BYTES = 128 * 1024 * 1024;
 const MAX_ENTRIES = 5000;
 const MAX_DEPTH = 12;
@@ -20,6 +23,29 @@ const SCHEMA = 1;
 
 const sha256 = (b) => createHash('sha256').update(b).digest('hex');
 const nb = (s) => new TextEncoder().encode(s).length;
+
+/** 对象键排序的规范形；files[] 先按 path 排序（zip 导入的声明顺序不参与同一性判定） */
+function canonicalManifest(v) {
+  if (Array.isArray(v)) return v.map(canonicalManifest);
+  if (v !== null && typeof v === 'object') {
+    const o = {};
+    for (const k of Object.keys(v).sort()) o[k] = canonicalManifest(v[k]);
+    return o;
+  }
+  return v;
+}
+
+function sameManifest(a, b) {
+  const norm = (m) => {
+    if (m === null || typeof m !== 'object' || Array.isArray(m)) return m;
+    const o = { ...m };
+    if (Array.isArray(o.files)) {
+      o.files = [...o.files].sort((x, y) => (x?.path < y?.path ? -1 : x?.path > y?.path ? 1 : 0));
+    }
+    return canonicalManifest(o);
+  };
+  return JSON.stringify(norm(a)) === JSON.stringify(norm(b));
+}
 
 /* ---------------- path hygiene (posix, zip-slip proof) ---------------- */
 
@@ -379,9 +405,10 @@ if (cmd === 'hash') {
     console.error(`stamp: ${files.length} 文件 / ${unpacked} 字节，sha256 已重算写入 pack.json`);
   } else process.stdout.write(text);
 } else if (cmd === 'hydrate') {
-  // CI 用：PR 只带 pack.json（Worker 10ms CPU 只做结构闸）时，从 R2 待审 zip 解包补全
+  // CI 用：PR / master 只有 pack.json（Worker 10ms CPU 只做结构闸）时，从 R2 原件解包补全
   // 明文树 + 数据级对账。判据与 verify 同款：条目集 == pack.json + files/**，
-  // zip 内 pack.json 与树内逐字节一致，逐文件 bytes/sha256 重算对拍后才落盘。
+  // zip 内 pack.json 与树内语义一致（字节相同直接过；Worker 重序列化造成的格式化差异
+  // 按语义比），逐文件 bytes/sha256 重算对拍后才落盘。
   const root = positional[0] ?? 'packs';
   const sel = positional[1] ?? '';
   const segs = sel.split('/');
@@ -391,7 +418,7 @@ if (cmd === 'hash') {
   try { treePack = readFileSync(join(dir, 'pack.json')); }
   catch { fail([`hydrate: ${sel}/pack.json 不存在（PR 树里先要有 pack.json 才能补全）`]); }
   const zip = readFileSync(positional[2]);
-  if (zip.length > MAX_ZIP_BYTES) fail([`hydrate: zip ${zip.length} > ${MAX_ZIP_BYTES}`]);
+  if (zip.length > MAX_UPLOAD_ZIP_BYTES) fail([`hydrate: zip ${zip.length} > ${MAX_UPLOAD_ZIP_BYTES}`]);
   let entries;
   try { entries = readZip(zip); } catch (e) { fail([`hydrate: zip 解析失败：${e.message}`]); }
   let j;
@@ -415,7 +442,13 @@ if (cmd === 'hash') {
   let count = 0;
   for (const e of entries) {
     if (e.name === 'pack.json') {
-      if (!treePack.equals(e.data)) fail(['hydrate: zip 内 pack.json 与树内 pack.json 不一致：待审包与 PR 不同源，拒绝补全']);
+      if (!treePack.equals(e.data)) {
+        let zipPack;
+        try { zipPack = JSON.parse(e.data.toString('utf8')); }
+        catch { fail(['hydrate: zip 内 pack.json 不是合法 JSON']); }
+        if (!sameManifest(j, zipPack)) fail(['hydrate: zip 内 pack.json 与树内 pack.json 语义不一致：待审包与 PR 不同源，拒绝补全']);
+        console.error(`hydrate: ${sel}/pack.json 字节不同但语义一致（Worker 重序列化 / 格式化差异），按树内清单继续`);
+      }
       continue;
     }
     const f = declared.get(e.name);
