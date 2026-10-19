@@ -275,13 +275,16 @@ function readZip(buf) {
   const entries = [];
   for (let n = 0; n < count; n++) {
     if (buf.readUInt32LE(p) !== SIG_CENTRAL) throw new Error(`中央目录第 ${n} 条签名不符`);
-    const flags = buf.readUInt16LE(p + 8), method = buf.readUInt16LE(p + 10);
+    const method = buf.readUInt16LE(p + 10);
     const crc = buf.readUInt32LE(p + 16), csize = buf.readUInt32LE(p + 20), usize = buf.readUInt32LE(p + 24);
     const nlen = buf.readUInt16LE(p + 28), elen = buf.readUInt16LE(p + 30), clen = buf.readUInt16LE(p + 32);
     const lho = buf.readUInt32LE(p + 42);
-    const name = buf.subarray(p + 46, p + 46 + nlen).toString('utf8');
+    // bit 11（0x0800）不强制：fflate / 编辑器导出只对非 ASCII 名置位，纯 ASCII 条目不置是常态
+    // （demo.worker 的 pack.json 即此形态）。名字一律按 UTF-8 严格解码，不从 CP437 猜。
+    let name;
+    try { name = new TextDecoder('utf-8', { fatal: true }).decode(buf.subarray(p + 46, p + 46 + nlen)); }
+    catch { throw new Error(`中央目录第 ${n} 条：名字不是合法 UTF-8`); }
     p += 46 + nlen + elen + clen;
-    if ((flags & FLAG_UTF8) === 0) throw new Error(`${name}: 未置 UTF-8 标志位`);
     if (buf.readUInt32LE(lho) !== SIG_LOCAL) throw new Error(`${name}: 本地头签名不符`);
     const dstart = lho + 30 + buf.readUInt16LE(lho + 26) + buf.readUInt16LE(lho + 28);
     const comp = buf.subarray(dstart, dstart + csize);
