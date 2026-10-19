@@ -1,0 +1,918 @@
+﻿; ============================================================
+; 测试重写：キャノボ風レティ（K74 / 家族 CB風 / 选择器 1）
+; 来源：真实语料 ERB/口上・メッセージ関連/個人口上/074 Letty [レティ]/キャノボ風レティ
+; 说明：有效口上函数用 .kojo 写法重写；每句输出末尾加（此为测试文本）。
+;       未实现/占位的原函数原样保留在同包「占位补充.ERB」中。
+; ============================================================
+; 初対面、挨拶のタイミング
+; TALENTの変更はここでどうぞ。
+; 経験の変更は齟齬が出る場合がありますので、CSVを修正し同梱する事を推奨します
+; 口上主はTARGET
+; 地の文表示
+; --------------------------------------------------
+; 記入チェック（=0, 非表示、1, 表示）
+; 口上主はTARGET
+; 地の文表示
+; --------------------------------------------------
+; 記入チェック（=0, 非表示、1, 表示）
+; 口上主はTARGET
+; 地の文表示
+; --------------------------------------------------
+; 記入チェック（=0, 非表示、1, 表示）
+; 口上主はTARGET
+; --------------------------------------------------
+; 記入チェック（=0, 非表示、1, 表示）
+; 口上主はTARGET
+; --------------------------------------------------
+; 記入チェック（=0, 非表示、1, 表示）
+; 口上主はTARGET
+; --------------------------------------------------
+; 記入チェック（=0, 非表示、1, 表示）
+; -------------------------------------------------
+; -------------------------------------------------
+; -------------------------------------------------
+; -------------------------------------------------
+; 記入チェック（=0, 非表示、1, 表示）
+; -------------------------------------------------
+; 記入チェック（=0, 非表示、1, 表示）
+; -------------------------------------------------
+; 記入チェック（=0, 非表示、1, 表示）
+@M_KOJO_K74_1(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RESULTS = "_CB風"
+RESULTS:1 = "蕾蒂·霍瓦特洛克（测试重写）"
+RESULTS:2 = "基于真实语料 074 Letty/キャノボ風レティ 的 .kojo 语法重写测试包<br>每句台词末尾标记（此为测试文本）"
+
+@M_KOJO_CB風_ENCOUNTER_K74
+CALL M_KOJO_CB風_ENCOUNTER_K74_1
+RETURN RESULT
+
+@M_KOJO_CB風_ENCOUNTER_K74_1
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	PRINTFORMW 远处突然有声音传来、伴随着十足的冷气。（此为测试文本）
+	PRINTFORMW %CALLNAME:MASTER%看向声音传来的方向、有一个妖怪呼呼地飞了过来。（此为测试文本）
+	PRINTFORML
+	PRINTFORML 「呐呐呐、你是谁呀？（此为测试文本）」
+	PRINTFORMW 那妖怪有着像下雪时的阴天一样的淡藤色头发。衣服是蓝色与白色的搭配、帽子和围巾则是纯白色的、像是深雪的颜色。（此为测试文本）
+	PRINTFORMW 她在%CALLNAME:MASTER%的面前飘然降落下来。少女看上去十分端庄成熟、个子也很高。（此为测试文本）
+	PRINTFORML 「我叫蕾蒂·霍瓦特洛克。是喜欢冬天的妖怪（此为测试文本）」
+	PRINTFORMW 自我介绍完毕之后、她莞尔一笑。那是与成熟的外表相反的、和蔼可亲的笑容。（此为测试文本）
+	PRINTFORML 「想和我搞好关系的话、先从往日的问候开始吧（此为测试文本）」
+	PRINTFORML 「也请将你的名字告诉我♪（此为测试文本）」
+	PRINTFORMW 在细雪飞舞的氛围中、蕾蒂用春天般的声音询问着%CALLNAME:MASTER%。（此为测试文本）
+	PRINTFORML
+	PRINTFORML 「%CALLNAME:MASTER%啊！呵呵、以后要好好相处哦♪（此为测试文本）」
+	PRINTFORMW 人不可貌相、一开始还以为会是个言行举止轻浮的妖怪。（此为测试文本）
+	PRINTFORML 据说雪女会用美丽的外表引诱人类、然后将其冻死。（此为测试文本）
+	PRINTFORMW 但%CALLNAME:MASTER%从她身上感受不到那种恶毒。（此为测试文本）
+	SIF FIRSTTIME("开局设定",0,74)
+		CALL KOJO_CB風_OPTION_K74_RESULT_1
+	RETURN 1
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_SPEVENT_K74_1(ARG,ARG:1)
+CALL M_KOJO_CB風_SPEVENT_K74_1_1(ARG,ARG:1)
+RETURN RESULT
+
+@M_KOJO_CB風_SPEVENT_K74_1_1(ARG,ARG:1)
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	IF TALENT:恋慕
+		IF BASE:情緒 >= 1000
+			PRINTFORML 「%CALLNAME:MASTER%……（此为测试文本）」
+			PRINTFORMW 在回去的路上、蕾蒂用略带颤抖的声音叫住了%CALLNAME:MASTER%。（此为测试文本）
+			PRINTFORML 「那个……怎么说才好呢？（此为测试文本）」
+			PRINTFORMW 看着样子有些奇怪的蕾蒂、%CALLNAME:MASTER%问她怎么了。（此为测试文本）
+			PRINTFORMW 走到站在原地的蕾蒂身边、她突然抱住了我。（此为测试文本）
+			PRINTFORMW 「我、好像有些变得奇怪了（此为测试文本）」
+			PRINTFORMW 「和%CALLNAME:MASTER%在一起的时候、为什么就会想这么做呢（此为测试文本）」
+			PRINTFORMW 蕾蒂那淡藤色的头发、轻轻地触碰到了%CALLNAME:MASTER%的额头――（此为测试文本）
+			PRINTFORML
+			PRINTFORMW 「……真是不可思议（此为测试文本）」
+			PRINTFORMW 「刚才感觉胸口暖洋洋的、现在觉得脸也快融化了（此为测试文本）」
+			PRINTFORMW 蕾蒂一副害羞的表情、抚摸着自己柔软的嘴唇。（此为测试文本）
+			CALL HPH_PRINT,@"「你的热量好像转移给我了呢……HPH（此为测试文本）」","W"
+		ELSE
+			TCVAR:中止接吻 = 1
+			PRINTFORML 「……（此为测试文本）」
+			PRINTFORMW 和蕾蒂走在回家的路上、她一言不发地握住了%CALLNAME:MASTER%的手。（此为测试文本）
+			PRINTFORML （%CALLNAME:MASTER%的手、好温暖呢……）（此为测试文本）
+			PRINTFORMW 蕾蒂的另一只手紧紧地握在自己的胸前。（此为测试文本）
+			PRINTFORML （内心深处、能感受到一种快要将自己融化的温暖……是因为%CALLNAME:MASTER%吗……？）（此为测试文本）
+			PRINTFORMW （……但即便两人握着手、手也不会融化。到底是为什么呢……？）（此为测试文本）
+			PRINTFORMW %CALLNAME:MASTER%和蕾蒂若无其事地踏上了归途。（此为测试文本）
+		ENDIF
+	ELSE
+		TCVAR:中止接吻 = 1
+		PRINTFORML 「%CALLNAME:MASTER%？（此为测试文本）」
+		PRINTFORMW 在回家的路上、蕾蒂突然叫出了%CALLNAME:MASTER%的名字。（此为测试文本）
+		PRINTFORMW 回头一看、就看见蕾蒂一脸茫然的表情。（此为测试文本）
+		PRINTFORML 「我为什么会突然说出%CALLNAME:MASTER%的名字呢……？（此为测试文本）」
+		PRINTFORMW 蕾蒂可爱地歪着头、但她盯着%CALLNAME:MASTER%的眼神却有些迷蒙。（此为测试文本）
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_SPEVENT_K74_2(ARG,ARG:1)
+CALL M_KOJO_CB風_SPEVENT_K74_2_1(ARG,ARG:1)
+RETURN RESULT
+
+@M_KOJO_CB風_SPEVENT_K74_2_1(ARG,ARG:1)
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	LOCAL:1 = 1
+	IF LOCAL:1 && ARG == 0
+		IF FIRSTTIME(1003)
+			PRINTFORML 「和%CALLNAME:MASTER%在一起的时光、果然很开心啊～♪（此为测试文本）」
+			PRINTFORMW 蕾蒂像往常一样元气满满地说着。（此为测试文本）
+			PRINTFORML 「对了对了、说起来、最近呢、只要一想到关于%CALLNAME:MASTER%的事、我就会觉得心里暖洋洋的（此为测试文本）」
+			PRINTFORMW 「我一直在想为什么、现在我终于知道原因了！（此为测试文本）」
+			PRINTFORMW 快活地说着话的她、眯着晶莹剔透的大眼睛、眼神里带着爱的色彩看着%CALLNAME:MASTER%。（此为测试文本）
+			PRINTFORMW 「我、最喜欢%CALLNAME:MASTER%了！（此为测试文本）」
+			PRINTFORMW 「一起玩固然很开心、但一定是因为非常喜欢%CALLNAME:MASTER%所以才会有这样的感觉！（此为测试文本）」
+			PRINTFORMW 蕾蒂握着%CALLNAME:MASTER%的双手、把脸凑了过来。（此为测试文本）
+			PRINTFORML 「我、想和%CALLNAME:MASTER%成为更好的朋友！（此为测试文本）」
+			PRINTFORMW 「这样的话、每天都能和最喜欢的人一起玩耍了、那一定会很开心的！（此为测试文本）」
+			PRINTFORMW 「所以啊、你喜欢我吗？（此为测试文本）」
+			CFLAG:74:1002 = 1
+		ELSE
+			PRINTFORML 「哎呀、%CALLNAME:MASTER%也差不多该喜欢上我了吧？（此为测试文本）」
+			PRINTFORMW 在回家的路上、走在前面的蕾蒂突然回过头来询问%CALLNAME:MASTER%。（此为测试文本）
+			PRINTFORML 「我当然也很喜欢%CALLNAME:MASTER%！（此为测试文本）」
+			PRINTFORMW 「所以、想和%CALLNAME:MASTER%成为更好的朋友（此为测试文本）」
+			PRINTFORMW 总是无时无刻都非常天真烂漫的蕾蒂微微低下头、不安地抬眸眼望着%CALLNAME:MASTER%。（此为测试文本）
+			PRINTFORMW 「所以、还不行吗……？（此为测试文本）」
+		ENDIF
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 1
+	IF LOCAL:1 && ARG == 1
+		PRINTFORMW 「真的吗！？　太好了！　我们果然是最要好的朋友！（此为测试文本）」
+		PRINTFORMW %CALLNAME:MASTER%笑着告诉蕾蒂说、那叫做恋人。（此为测试文本）
+		PRINTFORML 「我和%CALLNAME:MASTER%是恋人吗？　恋人啊、真是个好词呢♪（此为测试文本）」
+		PRINTFORMW 从相遇时起，她的笑容就一直很耀眼，但现在是她迄今为止最灿烂的笑容。（此为测试文本）
+		PRINTFORML 「呵呵、心里感觉暖洋洋的、整个人都要融化了啊……（此为测试文本）」
+		PRINTFORMW 从蕾蒂那美丽的水晶之瞳里、像雪融水般温暖的眼泪顺着她的脸颊流下。（此为测试文本）
+		PRINTFORML 「嗯、我喜欢你、最喜欢你了！（此为测试文本）」
+		PRINTFORMW 擦了擦眼角后、蕾蒂用力地抱住了%CALLNAME:MASTER%。（此为测试文本）
+		PRINTFORMW 「现在的心情真的好高兴啊、感觉就像是在做梦一样（此为测试文本）」
+		CALL HPH_PRINT,@" 「今后请多多关照、%CALLNAME:MASTER%HPH（此为测试文本）」","W"
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 1
+	IF LOCAL:1 && ARG == 2
+		PRINTFORML 「诶～！？　你还没有喜欢上我吗？　这样啊～（此为测试文本）」
+		PRINTFORMW 蕾蒂看起来有些遗憾。（此为测试文本）
+		PRINTFORML 「我这么喜欢%CALLNAME:MASTER%、%CALLNAME:MASTER%却还没有喜欢上我……（此为测试文本）」
+		PRINTFORMW 她变得有些沮丧、那是平日里想都不敢想的。白色的围巾似乎也因此而垂下来了。（此为测试文本）
+		PRINTFORML 「不过、如果你以后能喜欢上我的话就好了！（此为测试文本）」
+		PRINTFORMW 但是、蕾蒂很快就振作起来了、她牵起了%CALLNAME:MASTER%的手。（此为测试文本）
+		PRINTFORMW 「两个人一起去做更开心的事吧！　那样的话、你就会喜欢上我了吧？（此为测试文本）」
+		PRINTFORMW 蕾蒂带着一如既往的灿烂笑容、迈开了步伐。（此为测试文本）
+		IF FIRSTTIME(1003)
+			PRINTFORML
+			PRINTFORML
+			PRINTFORML
+			PRINTFORML （%CALLNAME:MASTER%原来不喜欢我啊……）（此为测试文本）
+			PRINTFORMW （不、今后要是关系能更好的话就好了）（此为测试文本）
+			PRINTFORMW （……咦？）（此为测试文本）
+			PRINTFORMW （因为我喜欢%CALLNAME:MASTER%、所以才会有那种快要融化了的温暖心情……）（此为测试文本）
+			PRINTFORMW （但为什么真正融化的时候、却是这样感到遗憾与寒冷的时候呢……）（此为测试文本）
+			PRINTFORMW 从%CALLNAME:MASTER%看不见的蕾蒂的眼睛里、像冰柱融化般的眼泪正在积存着。（此为测试文本）
+		ENDIF
+		RETURN 1
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_SPEVENT_K74_3(ARG,ARG:1)
+CALL M_KOJO_CB風_SPEVENT_K74_3_1(ARG,ARG:1)
+RETURN RESULT
+
+@M_KOJO_CB風_SPEVENT_K74_3_1(ARG,ARG:1)
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	LOCAL:1 = 1
+	IF LOCAL:1 && ARG == 0
+		IF TALENT:恋人
+			PRINTFORMW 「今天真开心啊～（此为测试文本）」
+			PRINTFORMW 蕾蒂心情愉快地抱着%CALLNAME:MASTER%的手臂。（此为测试文本）
+			PRINTFORMW 「下次再和我约会吧♪　%CALLNAME:MASTER%、我爱你♪（此为测试文本）」
+		ELSEIF TALENT:恋慕
+			IF CFLAG:74:1002 == 0
+				PRINTFORMW 「啊ー、真开心啊！（此为测试文本）」
+				PRINTFORMW 蕾蒂哼着小曲走在回家的路上。（此为测试文本）
+				PRINTFORMW 「今天和%CALLNAME:MASTER%玩了很久呢♪　还想和你一起出去玩♪（此为测试文本）」
+			ELSE
+				PRINTFORMW 「欸嘿嘿、今天也和%CALLNAME:MASTER%一起出去玩了♪（此为测试文本）」
+				PRINTFORMW 蕾蒂有些不好意思地将双手交叉在胸前。（此为测试文本）
+				PRINTFORMW 「这就是所谓的约会吧？　……%CALLNAME:MASTER%也很开心吗？（此为测试文本）」
+			ENDIF
+		ELSEIF TALENT:思慕
+			PRINTFORMW 「和%CALLNAME:MASTER%一起出去玩、真开心啊！（此为测试文本）」
+			PRINTFORMW 蕾蒂微笑着。（此为测试文本）
+			PRINTFORMW 「下次再一起去别的地方玩吧♪　一定会有更开心的事情的♪（此为测试文本）」
+		ELSE
+			PRINTFORMW 「去雾之湖之外的地方玩也很开心呢（此为测试文本）」
+			PRINTFORMW 「下次也邀请琪露诺一起去玩吧、去别的地方玩也很开心！（此为测试文本）」
+		ENDIF
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 1
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 2
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 3
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	PRINTFORML
+	RETURN 1
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_EVENT_K74_1(ARG,ARG:1)
+CALL M_KOJO_CB風_EVENT_K74_1_1(ARG,ARG:1)
+RETURN RESULT
+
+@M_KOJO_CB風_EVENT_K74_1_1(ARG,ARG:1)
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	LOCAL:1 = 1
+	IF LOCAL:1 && GROUPMATCH(ARG, 1, 6)
+		IF TALENT:恋人
+			PRINTFORML 「啊、%CALLNAME:MASTER%！　你来看我了吗？（此为测试文本）」
+			PRINTFORMW 蕾蒂满面笑容地抱住了%CALLNAME:MASTER%。（此为测试文本）
+			PRINTFORMW 「嘻嘻♪　和%CALLNAME:MASTER%在一起的时候、果然会很安心呢♪（此为测试文本）」
+		ELSEIF TALENT:恋慕
+			PRINTFORML 「%CALLNAME:MASTER%～！（此为测试文本）」
+			PRINTFORMW 蕾蒂笑着走过来。（此为测试文本）
+			PRINTFORMW 「呐、和我一起去玩吧♪（此为测试文本）」
+		ELSEIF TALENT:思慕
+			PRINTFORML 「%CALLNAME:MASTER%～（此为测试文本）」
+			PRINTFORMW 蕾蒂向%CALLNAME:MASTER%招了招手。（此为测试文本）
+			PRINTFORMW 「现在正好有想要去玩耍的心情～。我们玩什么好呢？（此为测试文本）」
+		ELSE
+			PRINTFORMW 「什么呀～？　你会成为我的玩伴吗？（此为测试文本）」
+		ENDIF
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 1
+	IF LOCAL:1 && ARG == 2
+		IF TALENT:恋人
+			PRINTFORML 「%CALLNAME:MASTER%、找到你～了！（此为测试文本）」
+			PRINTFORMW 蕾蒂从背后抱住了我。（此为测试文本）
+			PRINTFORMW 「欸嘿嘿～♪（此为测试文本）」
+			PRINTFORMW 好满足啊……（此为测试文本）
+		ELSEIF TALENT:恋慕
+			PRINTFORML 「啊、你在这呀！（此为测试文本）」
+			PRINTFORMW 蕾蒂发现了我、高兴地走了过来。（此为测试文本）
+			PRINTFORMW 「因为想和你一起玩、所以一直在找你～♪（此为测试文本）」
+		ELSEIF TALENT:思慕
+			PRINTFORML 「%CALLNAME:MASTER%、你在干什么～？（此为测试文本）」
+			PRINTFORMW 蕾蒂兴致勃勃地走了过来。（此为测试文本）
+		ELSE
+			PRINTFORMW 「啊、是%CALLNAME:MASTER%啊（此为测试文本）」
+			PRINTFORMW 「要玩耍的话、让我也加入吧！（此为测试文本）」
+		ENDIF
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 3
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 4
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 5
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 6
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 7
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 8
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 9
+		IF ARG:1
+			LOCAL = LOCAL
+		ENDIF
+		PRINTFORML
+		RETURN 1
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_EVENT_K74_3(ARG,ARG:1)
+CALL M_KOJO_CB風_EVENT_K74_3_1(ARG,ARG:1)
+RETURN RESULT
+
+@M_KOJO_CB風_EVENT_K74_3_1(ARG,ARG:1)
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	LOCAL:1 = 1
+	IF LOCAL:1 && ARG == 1
+		IF TALENT:恋人
+			PRINTFORML 「我有些困了呢……（此为测试文本）」
+			PRINTFORMW 蕾蒂说着、突然拿起%CALLNAME:MASTER%的双手并将其贴在自己的脸颊上。（此为测试文本）
+			PRINTFORMW 「欸嘿嘿～……这样的话、说不定就能在梦中见到你了♪（此为测试文本）」
+			PRINTFORMW 「明天见、%CALLNAME:MASTER%♥（此为测试文本）」
+		ELSEIF TALENT:恋慕
+			PRINTFORML 「嗯～、好困～……（此为测试文本）」
+			PRINTFORMW 「和%CALLNAME:MASTER%在一起的时光很开心呢、只是一眨眼就到黄昏了～（此为测试文本）」
+			PRINTFORMW 蕾蒂有些依依不舍地回头看着%CALLNAME:MASTER%、最后还是离开了。（此为测试文本）
+		ELSEIF TALENT:思慕
+			PRINTFORML 「虽然还想再玩一会儿、但是已经是睡觉的时间了。晚安～（此为测试文本）」
+			PRINTFORMW 蕾蒂轻轻挥了挥手、离开了。（此为测试文本）
+		ELSE
+			PRINTFORML 「%CALLNAME:MASTER%、下次再一起玩吧～（此为测试文本）」
+			PRINTFORMW 蕾蒂睡眼惺忪地离开了。（此为测试文本）
+		ENDIF
+		PRINTFORMDW
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 2
+		PRINTFORMDW
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 3
+		PRINTFORMDW
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 5
+		PRINTFORMDW
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 6
+		PRINTFORMDW
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 1
+	IF LOCAL:1 && ARG == 7
+		LOCAL:1 = 0
+		IF LOCAL:1 && ARG:1 == 0
+			RETURN 1
+		ENDIF
+		LOCAL:1 = 0
+		IF LOCAL:1 && ARG:1 == 1
+			RETURN 1
+		ENDIF
+		LOCAL:1 = 0
+		IF LOCAL:1 && ARG:1 == 2
+			RETURN 1
+		ENDIF
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 8
+		PRINTFORMDW
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 9
+		PRINTFORMDW
+		RETURN 1
+	ENDIF
+	PRINTFORML
+	RETURN 1
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_EVENT_K74_4(ARG,ARG:1)
+CALL M_KOJO_CB風_EVENT_K74_4_1(ARG,ARG:1)
+RETURN RESULT
+
+@M_KOJO_CB風_EVENT_K74_4_1(ARG,ARG:1)
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	LOCAL:1 = 0
+	IF LOCAL:1 && ARG == 1
+		IF TALENT:恋人
+			LOCAL = LOCAL
+		ELSEIF TALENT:恋慕
+			LOCAL = LOCAL
+		ELSEIF TALENT:思慕
+			LOCAL = LOCAL
+		ELSE
+			PRINTFORML
+		ENDIF
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 1
+	IF LOCAL:1 && ARG == 2
+		IF TALENT:恋人
+			PRINTFORMW 「%CALLNAME:MASTER%现在没空吗、不过人总有忙的时候吧（此为测试文本）」
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 「我还以为你会陪我玩呢～。你现在很忙吗？（此为测试文本）」
+		ELSEIF TALENT:思慕
+			PRINTFORMW 「啊ー、要走了吗？　我还想再玩一会呢（此为测试文本）」
+		ELSE
+			PRINTFORMW 蕾蒂对%CALLNAME:MASTER%的点头以微笑着轻轻挥手回应。（此为测试文本）
+		ENDIF
+		RETURN 1
+	ENDIF
+	LOCAL:1 = 1
+	IF LOCAL:1 && ARG == 3
+		IF TALENT:恋人
+			PRINTFORMW 蕾蒂略带落寞地对着%CALLNAME:MASTER%的背影挥了挥手。（此为测试文本）
+		ELSEIF TALENT:恋慕
+			PRINTFORMW 蕾蒂带着有些遗憾的表情回去继续一个人玩耍。（此为测试文本）
+		ELSEIF TALENT:思慕
+			PRINTFORMW 蕾蒂有些生气地看着%CALLNAME:MASTER%的背影。（此为测试文本）
+		ELSE
+			PRINTFORMW 蕾蒂瞥了一眼%CALLNAME:MASTER%、又继续开始了玩耍。（此为测试文本）
+		ENDIF
+		RETURN 1
+	ENDIF
+	PRINTFORML
+	RETURN 1
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_EVENT_K74_ONABARE_1(ARG)
+CALL M_KOJO_CB風_EVENT_K74_ONABARE_1_1(ARG)
+RETURN RESULT
+
+@M_KOJO_CB風_EVENT_K74_ONABARE_1_1(ARG)
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	IF ARG
+		PRINTFORML 玩弄A的情况（此为测试文本）
+	ELSE
+		PRINTFORML 玩弄V的情况（此为测试文本）
+	ENDIF
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_EVENT_K74_ONABARE_2(ARG)
+CALL M_KOJO_CB風_EVENT_K74_ONABARE_2_1(ARG)
+RETURN RESULT
+
+@M_KOJO_CB風_EVENT_K74_ONABARE_2_1(ARG)
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	IF ARG
+		PRINTFORML 玩弄A的情况（此为测试文本）
+	ELSE
+		PRINTFORML 玩弄V的情况（此为测试文本）
+	ENDIF
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_EVENT_K74_ONABARE_3(ARG,ARG:1,ARG:2,ARG:3)
+CALL M_KOJO_CB風_EVENT_K74_ONABARE_3_1(ARG,ARG:1,ARG:2,ARG:3)
+RETURN RESULT
+
+@M_KOJO_CB風_EVENT_K74_ONABARE_3_1(ARG,ARG:1,ARG:2,ARG:3)
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	SELECTCASE ARG
+		CASE 1
+			PRINTFORML 欺负Ｃ（此为测试文本）
+		CASE 2
+			PRINTFORML 欺负Ｂ（此为测试文本）
+		CASE 3
+			PRINTFORML 欺负Ｍ（此为测试文本）
+	ENDSELECT
+	IF ARG:1
+		PRINTFORML A插入（此为测试文本）
+	ELSE
+		PRINTFORML V插入（此为测试文本）
+	ENDIF
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_MESSAGE_COM_K74_300
+CALL M_KOJO_CB風_MESSAGE_COM_K74_300_1
+RETURN RESULT
+
+@M_KOJO_CB風_MESSAGE_COM_K74_300_1
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	IF CFLAG:ブチギレ > 1
+		PRINTFORML 「哼ー你干嘛！（此为测试文本）」
+		PRINTFORMW 蕾蒂撅着嘴、把头扭向一边。（此为测试文本）
+	ELSEIF TCVAR:302
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTFORML 「……（此为测试文本）」
+				PRINTFORMW 蕾蒂用手指不停地把玩着头发。似乎很无聊的样子。（此为测试文本）
+			CASE 1
+				PRINTFORML 「那些事我已经听过了哦？（此为测试文本）」
+				PRINTFORMW 蕾蒂歪着头说。（此为测试文本）
+		ENDSELECT
+	ELSEIF TFLAG:193 < 0
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「呐、没有更有趣的故事了吗？（此为测试文本）」
+				PRINTFORMW 蕾蒂的话有些过于直球。让%CALLNAME:MASTER%感到有些受伤。（此为测试文本）
+			CASE 1
+				PRINTFORML 「啊、那里有只蝴蝶啊！（此为测试文本）」
+				PRINTFORMW 蕾蒂突然打断了%CALLNAME:MASTER%说话、手指指向对面。（此为测试文本）
+			CASE 2
+				PRINTFORML 「做什么好呢～（此为测试文本）」
+				PRINTFORMW 蕾蒂似乎心不在焉地想着接下来的计划……（此为测试文本）
+		ENDSELECT
+	ELSEIF TALENT:恋慕 && BASE:酒気 > (MAXBASE:酒気 / 10) * 8
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTFORML 「欸嘿嘿、嘻嘻嘻嘻嘻♪（此为测试文本）」
+				PRINTFORMW 蕾蒂笑着钻进%CALLNAME:MASTER%的怀里……（此为测试文本）
+			CASE 1
+				PRINTFORML 「嗯……？　为什么会有四个%CALLNAME:MASTER%～♪（此为测试文本）」
+				PRINTFORMW 看来是喝醉了正在打转着眼睛……（此为测试文本）
+			CASE 2
+				PRINTFORML 「好热啊～……嘻嘻、欸嘿嘿……（此为测试文本）」
+				PRINTFORMW 蕾蒂笑着拉了拉自己胸口的衣服……（此为测试文本）
+			CASE 3
+				PRINTFORMW 「世界为什么在旋转！　这是什么异变吗～！（此为测试文本）」
+				PRINTFORMW 蕾蒂躺在地上在说些什么啊……（此为测试文本）
+		ENDSELECT
+	ELSEIF TALENT:恋慕 && BASE:酒気 > (MAXBASE:酒気 / 10) * 5
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「感觉有点热啊～（此为测试文本）」
+				PRINTFORMW 蕾蒂松开围巾、啪嗒啪嗒地扇着自己的胸口。（此为测试文本）
+			CASE 1
+				PRINTFORML 「%CALLNAME:MASTER%也要来喝一点吗～？（此为测试文本）」
+				PRINTFORMW 蕾蒂不停地打转着。（此为测试文本）
+				PRINTFORMW ……仔细一看、整个人都摇摇晃晃的。（此为测试文本）
+			CASE 2
+				PRINTFORML 「和%CALLNAME:MASTER%一起喝的酒真好喝呢♪（此为测试文本）」
+				PRINTFORMW 这喝醉的速度也太快了。真的没问题吗……？（此为测试文本）
+		ENDSELECT
+	ELSEIF TALENT:恋慕 && BASE:酒気 >= 1
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「心情变得愉快起来了～（此为测试文本）」
+				PRINTFORMW 蕾蒂的声音比任何时候都爽朗。（此为测试文本）
+			CASE 1
+				PRINTFORML 「喝酒的时候太高兴了、一不小心就喝多了～（此为测试文本）」
+				PRINTFORMW 虽然是这么说但看不出有多小心。（此为测试文本）
+			CASE 2
+				PRINTFORML 「欸嘿嘿～♪（此为测试文本）」
+				PRINTFORMW 蕾蒂看起来很高兴。脸也有点红……（此为测试文本）
+		ENDSELECT
+	ELSEIF TFLAG:193 == 1
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTFORML 「呵呵、真有意思啊！（此为测试文本）」
+				PRINTFORMW 好像很喜欢我说的这个故事。（此为测试文本）
+			CASE 1
+				PRINTFORML 「诶～……好棒的故事呢！（此为测试文本）」
+				PRINTFORMW 蕾蒂水晶般的眼睛更加闪亮了。（此为测试文本）
+		ENDSELECT
+	ELSEIF TALENT:恋人
+		SELECTCASE RAND:9
+			CASE 0
+				PRINTFORML 「呐呐、%CALLNAME:MASTER%、你喜欢我吗？（此为测试文本）」
+				PRINTFORMW %CALLNAME:MASTER%点了点头、蕾蒂双手捧着脸颊、开心地笑了。（此为测试文本）
+				PRINTFORMW 「我也喜欢你哦～♪（此为测试文本）」
+			CASE 1
+				PRINTFORML 「因为旧地狱有个灼热地狱遗址、所以温泉才会涌出来！　下次一起去吧！（此为测试文本）」
+				PRINTFORMW 两个人正计划着去泡温泉。（此为测试文本）
+				PRINTFORMW 「啊ー！？　不能一起进去吗？（此为测试文本）」
+				PRINTFORMW 遗憾的是、不行。（此为测试文本）
+			CASE 2
+				PRINTFORML 「你见过獏吗？（此为测试文本）」
+				PRINTFORMW 「如果可以的话、我希望獏能让我在梦中也和%CALLNAME:MASTER%在一起（此为测试文本）」
+				PRINTFORMW 「如果梦中也能见到%CALLNAME:MASTER%的话、那一定很棒！（此为测试文本）」
+			CASE 3
+				PRINTFORML 「去哪里玩呢～。%CALLNAME:MASTER%、你觉得去哪里比较好？（此为测试文本）」
+				PRINTFORMW 说到这里、蕾蒂突然意识到。（此为测试文本）
+				PRINTFORMW 「没错！　只要是和%CALLNAME:MASTER%一起玩的话、做什么都很开心！（此为测试文本）」
+			CASE 4
+				PRINTFORML 「冬天真好啊～。雪景很美、也有很多好玩的游戏（此为测试文本）」
+				PRINTFORMW 「所以、如果能和%CALLNAME:MASTER%一起过冬的话就再好不过了！（此为测试文本）」
+				PRINTFORMW %CALLNAME:MASTER%和蕾蒂讨论了该玩什么。（此为测试文本）
+			CASE 5
+				PRINTFORML 「话说回来、%CALLNAME:MASTER%啊、故事里的雪女好像现在都找不到了呢（此为测试文本）」
+				PRINTFORMW 「我？　我不会那样做的哦？（此为测试文本）」
+				PRINTFORMW 「那样做的话就见不到%CALLNAME:MASTER%了、真讨厌！（此为测试文本）」
+			CASE 6
+				PRINTFORML 「欸嘿嘿～♪　和%CALLNAME:MASTER%说话的时候、整个人就会放松下来呢～♪（此为测试文本）」
+				PRINTFORMW 蕾蒂幸福地笑了。（此为测试文本）
+			CASE 7
+				PRINTFORMW 「%CALLNAME:MASTER%、侧耳朵过来一下下好吗？（此为测试文本）」
+				PRINTFORML 「最喜欢你了♥（此为测试文本）」
+				PRINTFORMW 蕾蒂在我耳边高兴地低语着。（此为测试文本）
+				PRINTFORMW 「如果不是悄悄地说出来的话、我会害羞得脸都红了♪（此为测试文本）」
+			CASE 8
+				PRINTFORML 「好开心～♪（此为测试文本）」
+				PRINTFORMW 和蕾蒂一起玩了各种各样的游戏。（此为测试文本）
+				PRINTFORMW ……为什么会有种怀念的感觉呢……（此为测试文本）
+		ENDSELECT
+	ELSEIF TALENT:恋慕
+		IF CFLAG:74:1002 == 0
+			SELECTCASE RAND:5
+				CASE 0
+					PRINTFORML 「前些天、我读了关于雪女的故事（此为测试文本）」
+					PRINTFORMW 「悲伤的故事有很多。连我都感到伤心了（此为测试文本）」
+					PRINTFORMW 蕾蒂的表情有些阴沉、但很快就露出了灿烂的笑容。（此为测试文本）
+					PRINTFORMW 「但是、我和%CALLNAME:MASTER%是好朋友、所以不会像故事里的那样吧？（此为测试文本）」
+				CASE 1
+					PRINTFORMW 蕾蒂呆呆地看着%CALLNAME:MASTER%的脸……（此为测试文本）
+					PRINTFORML 「啊咧？　为什么会盯着看呢……？（此为测试文本）」
+					PRINTFORMW 蕾蒂感到有些不可思议、但又再次开始盯着%CALLNAME:MASTER%的脸。（此为测试文本）
+				CASE 2
+					PRINTFORML 「和%CALLNAME:MASTER%在一起真的好开心啊！（此为测试文本）」
+					PRINTFORMW 蕾蒂露出了像花朵绽放一般的笑容。（此为测试文本）
+					PRINTFORMW 「要是能永远在一起就好了～……（此为测试文本）」
+				CASE 3
+					PRINTFORML 「冬天以外的季节经常容易犯困。有没有不犯困的好办法？（此为测试文本）」
+					PRINTFORMW 「喝茶或者喝咖啡的话对提神有帮助吗？　%CALLNAME:MASTER%要泡给我喝吗？（此为测试文本）」
+					PRINTFORMW 「那可真是一石二鸟啊！（此为测试文本）」
+					PRINTFORMW 「因为想和%CALLNAME:MASTER%一起玩、所以想多清醒一会儿！（此为测试文本）」
+				CASE 4
+					PRINTFORML 「和%CALLNAME:MASTER%一起玩就让我很开心了～♪（此为测试文本）」
+					PRINTFORMW 蕾蒂高兴地唱起了歌谣。（此为测试文本）
+			ENDSELECT
+		ELSE
+			SELECTCASE RAND:5
+				CASE 0
+					PRINTFORML 「去哪里玩呢～。%CALLNAME:MASTER%、你觉得去哪里比较好？（此为测试文本）」
+					PRINTFORMW 蕾蒂若有所思地问道。（此为测试文本）
+					PRINTFORMW 「如果有%CALLNAME:MASTER%喜欢的地方的话、我也想喜欢上那里呢（此为测试文本）」
+				CASE 1
+					PRINTFORML 「%CALLNAME:MASTER%喜欢什么样的料理？（此为测试文本）」
+					PRINTFORMW 「我呢～、喜欢冷的和甜的东西！（此为测试文本）」
+					PRINTFORMW 「不过、果然还是冬天的料理好啊！（此为测试文本）」
+				CASE 2
+					PRINTFORML （再回头看看我好吗……）（此为测试文本）
+					PRINTFORMW 蕾蒂的眼睛有些凄切地映照着%CALLNAME:MASTER%的背影……（此为测试文本）
+				CASE 3
+					PRINTFORML 「呐、%CALLNAME:MASTER%、我可以去那边吗？（此为测试文本）」
+					PRINTFORMW 蕾蒂靠在%CALLNAME:MASTER%的肩膀上、满足地抱着他的手臂。（此为测试文本）
+					PRINTFORMW 「像这样被喜欢的人照顾、真开心啊♪（此为测试文本）」
+				CASE 4
+					PRINTFORML 「%CALLNAME:MASTER%的手真大啊～（此为测试文本）」
+					PRINTFORMW 蕾蒂摆弄着%CALLNAME:MASTER%的手……（此为测试文本）
+					PRINTFORMW 「欸嘿嘿～♪（此为测试文本）」
+					PRINTFORMW 她把自己的手也合了上去……（此为测试文本）
+			ENDSELECT
+		ENDIF
+	ELSEIF TALENT:思慕
+		SELECTCASE RAND:5
+			CASE 0
+				PRINTFORML 「无聊的时候、我经常和琪露诺一起玩！（此为测试文本）」
+				PRINTFORMW 「那孩子一年到头都很闲、所以才会陪我玩（此为测试文本）」
+			CASE 1
+				PRINTFORMW 蕾蒂佩服地听着%CALLNAME:MASTER%所说的关于泡茶的方法……（此为测试文本）
+				PRINTFORMW 「泡茶的温度和时间也很重要吗ー。那下次你泡绿茶的时候、我帮你把水放凉（此为测试文本）」
+				PRINTFORMW 「啊、不过都还没见过%CALLNAME:MASTER%是在哪里准备热水的呢……（此为测试文本）」
+			CASE 2
+				PRINTFORMW 蕾蒂佩服地听着%CALLNAME:MASTER%所说的关于打扫的方法……（此为测试文本）
+				PRINTFORMW 「原来如此、把湿了的报纸揉成一团放在那里的话就不会起灰了……（此为测试文本）」
+				PRINTFORMW 「天狗派发的报纸就应该这样用啊！（此为测试文本）」
+			CASE 3
+				PRINTFORML 「妖精们都很爱玩耍、所以我们是好朋友（此为测试文本）」
+				PRINTFORMW 「一起去对人类搞恶作剧、玩弹幕游戏！真的是非常有趣呢～（此为测试文本）」
+				PRINTFORMW 「下次、%CALLNAME:MASTER%也来和我们一起玩吧！（此为测试文本）」
+			CASE 4
+				PRINTFORML 「冬天有各种各样的游戏呢～。滑雪啦、滑冰啦、打雪仗啦……（此为测试文本）」
+				PRINTFORMW 和蕾蒂讨论了关于冬天的游戏。（此为测试文本）
+				PRINTFORMW 「嘻嘻、我可是很擅长冬天的游戏的哦？（此为测试文本）」
+		ENDSELECT
+	ELSEIF TALENT:愛欲 || TALENT:炮友
+		LOCAL = LOCAL
+	ELSE
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORML 「你想和我说话吗？想和我聊点什么呢？（此为测试文本）」
+				PRINTFORMW 给蕾蒂讲了关于过去的故事。（此为测试文本）
+				PRINTFORMW ……好像很中意。（此为测试文本）
+			CASE 1
+				PRINTFORMW %CALLNAME:MASTER%向蕾蒂展示了一些杂学。（此为测试文本）
+				PRINTFORML 「诶～、这个我也不知道呢～（此为测试文本）」
+				PRINTFORMW 蕾蒂佩服地听着。（此为测试文本）
+			CASE 2
+				PRINTFORML 「啊、你要和我一起玩吗？（此为测试文本）」
+				PRINTFORMW 陪蕾蒂玩了一阵子。（此为测试文本）
+		ENDSELECT
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_MESSAGE_COM_K74_301
+CALL M_KOJO_CB風_MESSAGE_COM_K74_301_1
+RETURN RESULT
+
+@M_KOJO_CB風_MESSAGE_COM_K74_301_1
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	IF TALENT:恋人
+		SELECTCASE RAND:6
+			CASE 0
+				PRINTFORML 「这是咖啡吗……！（此为测试文本）」
+				PRINTFORMW 我给蕾蒂泡了冰咖啡。（此为测试文本）
+				PRINTFORMW 「好苦～！（此为测试文本）」
+				PRINTFORMW ……还没有加牛奶和糖。（此为测试文本）
+			CASE 1
+				PRINTFORML 「果然还是%CALLNAME:MASTER%泡的茶好喝～♪（此为测试文本）」
+				PRINTFORMW 蕾蒂双手捧着茶杯、幸福地笑了。（此为测试文本）
+				PRINTFORMW 「一直以来谢谢你、%CALLNAME:MASTER%♪（此为测试文本）」
+			CASE 2
+				PRINTFORML 「对了、你平时都是从哪里拿出饮料来的？（此为测试文本）」
+				PRINTFORMW 「如果可以的话请告诉我～（此为测试文本）」
+				PRINTFORMW 那是商业机密哦。（此为测试文本）
+			CASE 3
+				PRINTFORML 「总觉得很紧张呢～（此为测试文本）」
+				PRINTFORMW 往茶杯里倒了可乐。（此为测试文本）
+				PRINTFORMW 「唔～、有点不太习惯这种嘶嘶冒泡的感觉（此为测试文本）」
+				PRINTFORMW 好像不喜欢喝碳酸饮料……（此为测试文本）
+			CASE 4
+				PRINTFORML 「奶茶很好喝呢～、又醇厚又甜！（此为测试文本）」
+				PRINTFORMW 蕾蒂好像很中意。（此为测试文本）
+				PRINTFORMW 「在外面的世界里奶茶是直接销售的吗？真羡慕啊～（此为测试文本）」
+			CASE 5
+				PRINTFORML 「这就是……奶昔……！（此为测试文本）」
+				PRINTFORMW 我给蕾蒂做了奶昔。（此为测试文本）
+				PRINTFORMW 「好像在喝冰淇淋！（此为测试文本）」
+				PRINTFORMW 似乎很中意的样子。（此为测试文本）
+		ENDSELECT
+	ELSEIF TALENT:恋慕
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTFORML 「花草茶的香味很好闻呢～（此为测试文本）」
+				PRINTFORMW 蕾蒂享受了片刻香草的香气。（此为测试文本）
+				PRINTFORMW ……这样看起来就像是个成熟的女人。（此为测试文本）
+			CASE 1
+				PRINTFORML 「像这样看着%CALLNAME:MASTER%给我泡茶、总觉得整个人都平静下来了～（此为测试文本）」
+				PRINTFORMW 蕾蒂一边喝茶、一边把自己的身体交给了%CALLNAME:MASTER%……（此为测试文本）
+				PRINTFORMW 「玩耍固然很好、但像这样放松一会儿也很好！（此为测试文本）」
+			CASE 2
+				PRINTFORML 「乌龙茶有很多种呢（此为测试文本）」
+				PRINTFORMW 「我的话、只要是%CALLNAME:MASTER%给我泡的茶、无论哪种都很好喝♪（此为测试文本）」
+			CASE 3
+				PRINTFORML 「可可有种让人安心的味道！（此为测试文本）」
+				PRINTFORMW 蕾蒂一小口一小口地喝着热可可……（此为测试文本）
+				PRINTFORMW 「一口气喝完就太可惜了、一点一点地慢慢喝吧～（此为测试文本）」
+		ENDSELECT
+	ELSEIF TALENT:思慕
+		SELECTCASE RAND:4
+			CASE 0
+				PRINTFORML 「是麦茶ー！（此为测试文本）」
+				PRINTFORMW 「虽然感觉是夏天的饮料、但是什么时候喝都很好喝～（此为测试文本）」
+				PRINTFORMW 对于不会中暑的妖怪来说、麦茶的功效似乎并不重要。（此为测试文本）
+			CASE 1
+				PRINTFORML 「%CALLNAME:MASTER%很擅长泡茶呢～（此为测试文本）」
+				PRINTFORMW 蕾蒂喝了绿茶之后呼了一口气。（此为测试文本）
+			CASE 2
+				PRINTFORML 「红茶在幻想乡里、除了红魔馆之外的地方都不怎么能看到（此为测试文本）」
+				PRINTFORMW 「这红茶也是红魔馆送的吗？（此为测试文本）」
+				PRINTFORMW 不愧是绯红吸血鬼之馆、用的都是好茶叶。（此为测试文本）
+			CASE 3
+				PRINTFORML 「梅昆布茶……平时不怎么喝、偶尔喝喝的话还觉得挺好喝的（此为测试文本）」
+				PRINTFORMW 「但是、昆布是从哪里买来的呢？（此为测试文本）」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTFORML 「热茶也不错啊～（此为测试文本）」
+				PRINTFORMW 原以为不是冷的东西就不行、但似乎并非如此。（此为测试文本）
+			CASE 1
+				PRINTFORML 「你给我冰过了吗？谢谢你！（此为测试文本）」
+				PRINTFORMW 蕾蒂开心地喝着绿茶。（此为测试文本）
+		ENDSELECT
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 1
+
+@M_KOJO_CB風_MESSAGE_COM_K74_302
+CALL M_KOJO_CB風_MESSAGE_COM_K74_302_1
+RETURN RESULT
+
+@M_KOJO_CB風_MESSAGE_COM_K74_302_1
+;-------------------------------------------------
+;記入チェック（=0, 非表示、1, 表示）
+LOCAL = 1
+;-------------------------------------------------
+IF LOCAL
+	IF TALENT:恋人
+		SELECTCASE RAND:5
+			CASE 0
+				PRINTFORML 「欸嘿嘿♪　感觉痒痒的～♪（此为测试文本）」
+				PRINTFORMW 从背后抓住蕾蒂的身体、抚摸着她。（此为测试文本）
+				PRINTFORMW 「再多摸一摸吧～♥（此为测试文本）」
+			CASE 1
+				PRINTFORMW 按揉着蕾蒂纤细的肩膀……（此为测试文本）
+				PRINTFORML 「嗯～、还不错呢～♪（此为测试文本）」
+				PRINTFORMW 好像并不怎么讲究的样子……（此为测试文本）
+			CASE 2
+				PRINTFORMW 试着把手放在蕾蒂的脖子上。（此为测试文本）
+				PRINTFORMW 「怎么了……？（此为测试文本）」
+				PRINTFORMW 可能是因为围巾的缘故、感觉有些闷热。（此为测试文本）
+			CASE 3
+				CALL HPH_PRINT,@" 「唔嗯……HPH（此为测试文本）」","L"
+				PRINTFORMW 当我的手触碰到蕾蒂的下腹部时、她发出了甜美的声音。（此为测试文本）
+				CALL HPH_PRINT,@" 「啊、那个……嗯嗯HPH（此为测试文本）」","W"
+			CASE 4
+				PRINTFORMW 握住了蕾蒂的手、她纤细的手指紧紧地缠了过来。（此为测试文本）
+				PRINTFORMW 「这就是所谓的恋人关系吗？那就是我和%CALLNAME:MASTER%紧紧联系在一起的方式吧♪（此为测试文本）」
+		ENDSELECT
+	ELSEIF TALENT:恋慕
+		SELECTCASE RAND:3
+			CASE 0
+				PRINTFORMW 搂住蕾蒂的肩膀、她将身体靠在了我身上。（此为测试文本）
+				PRINTFORMW 就这样安静地度过了一段时间……（此为测试文本）
+				PRINTFORMW （真想就这样一直下去啊……）（此为测试文本）
+			CASE 1
+				PRINTFORML 「呼嗯～……♪（此为测试文本）」
+				PRINTFORMW 挠了挠蕾蒂的脖子。她似乎很舒服的样子……（此为测试文本）
+				PRINTFORMW 伸手过去摸她的脸颊、她主动将脸凑了过来……（此为测试文本）
+			CASE 2
+				PRINTFORMW 拨弄着蕾蒂很有女人味的头发……（此为测试文本）
+				PRINTFORML 「要换发型的话、选什么样的好呢？（此为测试文本）」
+				PRINTFORMW 无论什么发型都一定很漂亮吧。（此为测试文本）
+		ENDSELECT
+	ELSEIF TALENT:思慕
+		SELECTCASE RAND:2
+			CASE 0
+				PRINTFORML 「就这样ー嘿！（此为测试文本）」
+				PRINTFORMW 蕾蒂突然把手伸向%CALLNAME:MASTER%的脖子。真的很冷啊。（此为测试文本）
+				PRINTFORMW 「吓了一跳吗？（此为测试文本）」
+				PRINTFORMW 就像是唐伞这种付丧神一样……（此为测试文本）
+			CASE 1
+				PRINTFORML 「之前我在路上看见一只小猫、一靠近它它就跑了～（此为测试文本）」
+				PRINTFORMW 蕾蒂不知为何抚摸着%CALLNAME:MASTER%的头……（此为测试文本）
+				PRINTFORMW 「我想你可以代替那只小猫……（此为测试文本）」
+		ENDSELECT
+	ELSE
+		SELECTCASE RAND:1
+			CASE 0
+				PRINTFORML 「欸嘿嘿、不要再挠痒痒了ー！（此为测试文本）」
+				PRINTFORMW 蕾蒂笑着缩了缩脖子。（此为测试文本）
+		ENDSELECT
+	ENDIF
+	RETURN 1
+ENDIF
+RETURN 1
