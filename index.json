@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-17T08:35:03.000Z",
+  "generatedAt": "2026-10-19T08:40:41.000Z",
   "packs": [
     {
       "kind": "dict-pack",
@@ -39,6 +39,71 @@
       },
       "fileCount": 1,
       "unpackedBytes": 471
+    },
+    {
+      "kind": "kojo-pack",
+      "id": "demo.worker",
+      "version": "1.0.0",
+      "name": "Worker 冒烟包",
+      "author": "tester",
+      "license": "CC0-1.0",
+      "minAppVersion": "0.4.0",
+      "zip": {
+        "url": "https://github.com/Poboking/kojo-market/releases/download/demo.worker-v1.0.0/demo.worker-1.0.0.zip",
+        "sha256": "3041b3a528c818e199f00737e7dea6861995ecbff7ceeb41d92c27b1f7eff179",
+        "bytes": 669
+      },
+      "fileCount": 2,
+      "unpackedBytes": 18
+    },
+    {
+      "kind": "kojo-pack",
+      "id": "kojo.letty-cb-rewrite-test",
+      "version": "0.0.3",
+      "name": "蕾蒂CB風口上 · .kojo 重写测试（zip 导入）",
+      "author": "舩 弦五郎",
+      "license": "CC BY-NC 4.0 · 署名-非商业性使用",
+      "summary": "真实语料《キャノボ風レティ》的 .kojo 重写测试包（普通 zip 导入发布）；每句台词末尾标记（此为测试文本）。原作：舩 弦五郎。",
+      "minAppVersion": "0.4.0",
+      "zip": {
+        "url": "https://github.com/Poboking/kojo-market/releases/download/kojo.letty-cb-rewrite-test-v0.0.3/kojo.letty-cb-rewrite-test-0.0.3.zip",
+        "sha256": "d815d301ce29ddf92a3e8fb05aab0e1da008df06c1474bf5b1134dcc6c86cbed",
+        "bytes": 25512
+      },
+      "fileCount": 4,
+      "unpackedBytes": 140936
+    },
+    {
+      "kind": "kojo-pack",
+      "id": "kojo.pmv8ayzg3-qljc83.2",
+      "version": "1.0.0",
+      "name": "演示口上包（合成）（导入）",
+      "author": "用户007",
+      "license": "保留所有权利（未生成 LICENSE 文件）",
+      "minAppVersion": "0.4.0",
+      "zip": {
+        "url": "https://github.com/Poboking/kojo-market/releases/download/kojo.pmv8ayzg3-qljc83.2-v1.0.0/kojo.pmv8ayzg3-qljc83.2-1.0.0.zip",
+        "sha256": "faa518a44e2bcfe2d9f9049fc0f7ddf2754a4673d1b2b1d3cd324161f39c1833",
+        "bytes": 965
+      },
+      "fileCount": 1,
+      "unpackedBytes": 471
+    },
+    {
+      "kind": "kojo-pack",
+      "id": "kojotest007",
+      "version": "1.0.0",
+      "name": "东方口上集-博丽(测试）",
+      "author": "测试用户",
+      "license": "LTOL · 时限开放许可（era 社区）",
+      "minAppVersion": "0.4.0",
+      "zip": {
+        "url": "https://github.com/Poboking/kojo-market/releases/download/kojotest007-v1.0.0/kojotest007-1.0.0.zip",
+        "sha256": "0a8fdc1aa196b0d9a0319bac4ac364ac1b0bdb0b558085dc3ada6bc9f6aca181",
+        "bytes": 9965
+      },
+      "fileCount": 10,
+      "unpackedBytes": 13133
     }
   ]
 }
