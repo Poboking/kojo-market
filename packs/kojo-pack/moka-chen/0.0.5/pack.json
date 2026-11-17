@@ -13,68 +13,68 @@
   "files": [
     {
       "path": "files/M_KOJO_K24_2_COUNTER系.ERB",
-      "bytes": 122639,
-      "sha256": "06193c4ce72aeceef9b28c7326ca9ead87d07b531b500eec62b690bf1b6d6079"
+      "bytes": 119300,
+      "sha256": "64c1a1760ec9d04ebccbf557407f5d43580e576b85540872a2e304c0181173ab"
     },
     {
       "path": "files/M_KOJO_K24_2_事件系.ERB",
-      "bytes": 355996,
-      "sha256": "a01d61608e1fb171abccb53404bd9d3a7d16c44f81d51c284e320155d03c0fcc"
+      "bytes": 348899,
+      "sha256": "68e2c055448e4839ee1cc24d95c7ddcd047faae92561c9a253709b802b6bb887"
     },
     {
       "path": "files/M_KOJO_K24_2_侍奉系指令.ERB",
-      "bytes": 10490,
-      "sha256": "021bd724815d0712dbe3b57c5f38b6a08939a660ed447d62a3968142f997532f"
+      "bytes": 10066,
+      "sha256": "ef48873672ddf853288412bfc6de26be6537ac77ba1c026a6ebf381e3ec79e91"
     },
     {
       "path": "files/M_KOJO_K24_2_依頼.ERB",
-      "bytes": 34137,
-      "sha256": "301daef68e76308bd49f18cba63bcf8a18baf6a5b1069598c8f3d54f0a6a7b07"
+      "bytes": 32928,
+      "sha256": "15d29ebb31a42ac911d9f0d83a310f8ed092a8ba10c0baede4ecea45b9c7e780"
     },
     {
       "path": "files/M_KOJO_K24_2_刻印取得.ERB",
-      "bytes": 7545,
-      "sha256": "0eeaf9b5271d7605dc1996ab608604107131d0c915245475846bb4451ae00ab4"
+      "bytes": 7395,
+      "sha256": "4617d3749f8593c5c95aa285d85999086ee4f08f669a006e22357ca3b58249de"
     },
     {
       "path": "files/M_KOJO_K24_2_弾幕勝負.ERB",
-      "bytes": 42619,
-      "sha256": "6858e2154113246331025d50fb6267a8eeec03839c1e6327c22f62d8510df37f"
+      "bytes": 41960,
+      "sha256": "f70fa640999f880ebd3b5d6bcb582d0f27740c071c051f998de8fe2052861ab8"
     },
     {
       "path": "files/M_KOJO_K24_2_性交系指令.ERB",
-      "bytes": 24188,
-      "sha256": "0af9b2d44acf889cb43e2fc5894c70a302f1934f2aac65df6d8db5823d538e02"
+      "bytes": 22958,
+      "sha256": "933689e66b58f7e4c5a527a8303c5bf0a4d1969cc17705b0ced36a0c2fceada9"
     },
     {
       "path": "files/M_KOJO_K24_2_性骚扰指令.ERB",
-      "bytes": 246713,
-      "sha256": "3106fa032face09dbe13676d3e5bf9c98bbd04092f4462ee1993ecd52f26516f"
+      "bytes": 243400,
+      "sha256": "ee4d238367812d3f4941c16a08c42cd7e988a03bf54ae9c8eb40ef48fc342d01"
     },
     {
       "path": "files/M_KOJO_K24_2_日常系指令.ERB",
-      "bytes": 632437,
-      "sha256": "4c0e22ceb6b581db94a8e9a8c2eb4252ae53221e546baa5e9833c6b84f312cc4"
+      "bytes": 621363,
+      "sha256": "53a63b2f6dc26d4bf74c5b8739c01a4be4c239c6b9a532ca0891b99773893970"
     },
     {
       "path": "files/M_KOJO_K24_2_爱抚系指令.ERB",
-      "bytes": 39332,
-      "sha256": "a63da5e85a048c1fee4d7c1c59ae2f45df02ed3a413461741b057a09aacb5698"
+      "bytes": 37737,
+      "sha256": "df1eb6257ea05367ce1ec4c3110c8f72c5b3716ec532861d6a5ce4dc5ab6c221"
     },
     {
       "path": "files/M_KOJO_K24_2_硬核系指令.ERB",
-      "bytes": 12015,
-      "sha256": "5bfe6a75139d28114cca6915daeb9e76b707a948f6ddaca5d9a0d99cfa87ebd9"
+      "bytes": 11453,
+      "sha256": "df485cd80638107ea5c009a45412146bf1c232eb0610207931dab3dd0d42374d"
     },
     {
       "path": "files/M_KOJO_K24_2_自定义函数.ERB",
-      "bytes": 128490,
-      "sha256": "16911a87a6f530d76befd0eb248745f4af8cb5cc34906cc97afc27a828bffe88"
+      "bytes": 126695,
+      "sha256": "a9b7eb5989f840e8f43ec441bdb876396a4e2721661f5eb88ee29492011d6044"
     },
     {
       "path": "files/M_KOJO_K24_2_高潮（详细版）.ERB",
-      "bytes": 21613,
-      "sha256": "46a2950568ab8153165f2038030f94bc4cef1f8ffc4008aaac3393fffb76ccc1"
+      "bytes": 20874,
+      "sha256": "75d17cb73ea6f6638ced65247ea5444ededf20fd4efbe8e513a7c182fa5cd1af"
     },
     {
       "path": "files/license.txt",
