@@ -119,9 +119,21 @@ function readManifest(u, errs) {
   if (typeof j.minAppVersion === 'string' && !VER_RE.test(j.minAppVersion)) E(`minAppVersion 必须匹配 ${VER_RE}`);
   for (const k of ['summary', 'sourceUrl', 'gameId'])
     if (j[k] !== undefined && (typeof j[k] !== 'string' || j[k].length === 0)) E(`${k}: 可选，给了就必须是非空字符串`);
+  // 客户端扩展（app R7-① 显式收窄声明）：只做形状闸——数组 + 逐项非空字符串。
+  // 语义闸在客户端导入期（声明必须与实际「补丁函数名 ∩ 游戏函数名」逐一相等），
+  // 注册表无从得知那份集合，故不在这里猜。
+  if (j.overrideFunctions !== undefined) {
+    if (!Array.isArray(j.overrideFunctions)) {
+      E('overrideFunctions 必须是字符串数组（缺省 = 客户端自动推导；[] = 显式声明不覆盖任何函数）');
+    } else {
+      j.overrideFunctions.forEach((name, i) => {
+        if (typeof name !== 'string' || name.length === 0) E(`overrideFunctions[${i}]: 必须是非空字符串（要函数名）`);
+      });
+    }
+  }
   if (typeof j.sourceUrl === 'string' && !/^https:\/\/\S+$/.test(j.sourceUrl)) E('sourceUrl 必须是 https:// 绝对 URL');
   if (!Array.isArray(j.files)) E('files 必须是数组');
-  const known = ['schema', 'kind', 'id', 'version', 'name', 'author', 'license', 'redistribute', 'sourceUrl', 'summary', 'minAppVersion', 'gameId', 'files'];
+  const known = ['schema', 'kind', 'id', 'version', 'name', 'author', 'license', 'redistribute', 'sourceUrl', 'summary', 'minAppVersion', 'gameId', 'files', 'overrideFunctions'];
   for (const k of Object.keys(j)) if (!known.includes(k)) E(`未知字段 ${k}（契约外的键不许进 pack.json）`);
   return j;
 }
