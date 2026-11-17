@@ -83,23 +83,23 @@
     },
     {
       "path": "files/note.txt",
-      "bytes": 3043,
-      "sha256": "907fe84832efc95f1016ba0bd8240840262a10dc959f38daf1b2c1da70e82f1e"
+      "bytes": 2898,
+      "sha256": "cd369a0572054d897c5b9350b3aa7dd1c86879c21639ffa561c40e74b2f94548"
     },
     {
       "path": "files/作者的话(readme).txt",
-      "bytes": 1126,
-      "sha256": "b5ea3bfbc02e0df2765be2fba8e29b5de3b95e9c00a02ea6a080d9c946736c04"
+      "bytes": 1107,
+      "sha256": "ab96e812a757b930210e3e8cb94361fdfb0acae3fee2aebbd19e43940398f0f3"
     },
     {
       "path": "files/口上记录.txt",
-      "bytes": 3565,
-      "sha256": "f260d6dfc09a408f2ed99a83e88121322eadca87cb0d02e36d6ca1da7b1ffadd"
+      "bytes": 3498,
+      "sha256": "bd92e353f5d9b1b2a508b2180b66dc6e6c384242f39412e399404c896f214c9d"
     },
     {
       "path": "files/更新日志.txt",
-      "bytes": 1143,
-      "sha256": "b611d1c309051630129d22695562bde62fcbb3744e3abe918f4a35074e089c71"
+      "bytes": 1122,
+      "sha256": "93b14250991038738c15da9ad4ea25ce3bf9cc3861676aa2de53f3c7f4580544"
     }
   ]
 }
