@@ -1,0 +1,739 @@
+;====================================================================
+;高潮系指令（详细版）
+;====================================================================
+;-------------------------------------------------
+;总览
+;-------------------------------------------------
+;维护人：狂气刘俊海
+;维护日期：2026年1月24日
+
+;本模板涵盖高潮系指令的文本分支
+;包含以下函数系列：
+;   对象高潮文本：@M_KOJO_MOKA_MESSAGE_PALAMCNG_B_K24
+;   对象睡眠高潮文本：@M_KOJO_MOKA_MESSAGE_PALAMCNG_B2_K24
+;   玩家射精文本：@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_XX(ARG)
+;   睡眠中玩家射精文本：@M_KOJO_MOKA_MESSAGE_PALAMCNG_A2_K24_XX(ARG)
+;   挑逗文本：@M_KOJO_MOKA_MESSAGE_PALAMCNG_F_K24(ARG)
+
+;本模板为详细版分支结构，按部位（C/V/A/B/M）和多重高潮组合（二重~五重）进行细分化分支
+;如需简易分支版本，请参考"高潮"模板
+
+;如果不知道指令的含义，或不知道如何设计差分，金标准是参照该指令的情景描写文本。
+;本系列的情景描写在以下位置：
+;   EVENT_MESSAGE_COM.ERB（指令情景描写）
+;   PALAM_MESSAGE_B（高潮情景描写，由@KOJO_MESSAGE_SEND统一调用）
+
+;关于指令控制系统与文本控制函数的说明，请参看爱抚系指令模板中的总览。
+;这里仅提供模板，按需复制使用。
+
+;-------------------------------------------------
+;剧本标识符说明
+;-------------------------------------------------
+;本模板中的_MOKA是剧本标识符的占位符
+;脚本创作者在复制本模板时，请将_MOKA替换为你的角色剧本标识符
+;例如，如果你的角色剧本标识符为"Reimu"：
+;   @M_KOJO_MOKA_MESSAGE_PALAMCNG_B_K24
+;   改为：
+;   @M_KOJO_Reimu_MESSAGE_PALAMCNG_B_K24
+;K24中的X请替换为角色编号
+;-------------------------------------------------
+;高潮系统变量说明
+;-------------------------------------------------
+;NOWEX:Ｃ絶頂, NOWEX:Ｖ絶頂, NOWEX:Ｂ絶頂, NOWEX:Ａ絶頂, NOWEX:Ｍ絶頂
+;   各部位的高潮强度。首先分配0~3，经多重高潮补正后最大可达16倍。
+;   NOWEX:Ｃ絶頂 == 3 超强 / 2 强 / 1 普通
+;NOWEX:TotalEX
+;   多重高潮补正前的各部位高潮强度合计值。1~15。
+;NOWEX:五重絶頂 (==9) / 四重絶頂 (==8) / 三重絶頂 (==7) / 二重絶頂 (==6)
+;   多重高潮判定标志。五重=5部位全部高潮，四重=4部位高潮，依此类推。
+;NOWEX:喷乳 (==10) / 射精 (==11) / 放尿 (==12)
+;   特殊排泄型高潮的独立判定
+
+;SYNCED_ORGASM(TARGET)
+;   同时高潮判定。TARGET与PLAYER同时达到高潮时为1
+;====================================================================
+
+;==================================================
+;关于剧本文本控制函数的说明，请参看爱抚系指令模板中的总览。
+;这里仅提供MESSAGECHECK模板，按需复制使用。
+;==================================================
+[SKIPSTART]
+;-------------------------------------------------
+;MESSAGECHECK函数
+;通过RESULTS返回控制标志
+;RESULTS:0 = 1时跳过情景文本
+;RESULTS:1 = 1时跳过口上文本
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_B_K24
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_B2_K24
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_00(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_0(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_1(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_2(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_3(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_4(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_5(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_6(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_7(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_8(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_9(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_20(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_21(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_22(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_23(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_MESSAGECHECK_A_K24_26(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+RETURN 0
+[SKIPEND]
+
+;==================================================
+;对象高潮时的口上
+;@KOJO_MESSAGE_SEND中PALAM类型CASE 2自动调用
+;情景文本PALAM_MESSAGE_B已由@KOJO_MESSAGE_SEND统一调用
+;==================================================
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_B_K24
+#LOCALSIZE 1
+#LOCALSSIZE 1
+IF CFLAG:317 == 0 && (NOWEX:24:0 || NOWEX:24:1 || NOWEX:24:2 ||  NOWEX:24:3 || NOWEX:24:4) ;处于非诶嘿嘿状态高潮
+    PRINTFORML 
+    SELECTCASE RAND:3
+    CASE 0
+        PRINTFORMW 「呼啊...明明...还在能被别人看见的地方的...」
+        PRINTFORMW 「不要再在这种时候欺负橙了嘛...真是的...被别人看见的话...橙该怎么办喵...」
+        PRINTFORMDW 从快感中渐渐恢复的小猫妖、朝着周围望了一圈、随即鼓起了生气的通红脸颊、把自己深深埋进了%CALLNAME:MASTER%的怀里、低声抱怨起来
+        PRINTFORMDW 只好把怀中的橙抱得更紧一些、安慰似的轻轻拍着她的后背、抚弄着后脑勺、直到她红着小脸主动分开了怀抱才停下安慰的抚摸  
+    CASE 1
+        PRINTFORMW 「呜喵...这种时候...%CALLNAME:MASTER%就不要欺负橙了喵...」
+        PRINTFORMW 「被这样子弄了的话...橙连衣服都没法穿了啦...呜呜...」
+        PRINTFORMDW 小猫妖一边紧紧捂着自己的裙摆、一边用带着哭腔的声音朝%CALLNAME:MASTER%抱怨起来
+        PRINTFORMDW 即使隔着衣物、似乎也能感受到从橙的身体上散发而出的、高潮过后的淫靡气息...不自觉地凑近去闻了一下
+        PRINTFORMW 「呜哇哇...！不要闻了啦...！真是的...变态...！」
+    CASE 2
+        PRINTFORMW 「呜呜...%CALLNAME:MASTER%是大坏蛋...！」
+        PRINTFORMW 「橙的衣服都已经乱成这样了啦...快点帮橙弄一下嘛...！」
+        PRINTFORMDW 从不合时宜的高潮中缓过来的小猫妖、第一时间就钻进了%CALLNAME:MASTER%的怀里、责怪似的挥起喵喵拳、不停地捶打着%CALLNAME:MASTER%的胸膛
+        PRINTFORMDW 只能带着歉意一边摸着胸口那颗毛茸茸的小脑袋、一边俯下身去、帮着她一点点整理好凌乱的衣服
+    ENDSELECT
+ENDIF    
+;-------------------------------------------------
+;喷乳
+;-------------------------------------------------
+IF NOWEX:喷乳
+    PRINTFORML 
+ENDIF
+
+;-------------------------------------------------
+;射精
+;-------------------------------------------------
+IF NOWEX:射精
+    PRINTFORML 
+ENDIF
+
+;-------------------------------------------------
+;放尿
+;-------------------------------------------------
+IF NOWEX:放尿
+    PRINTFORML 
+ENDIF
+
+;-------------------------------------------------
+;绝顶
+;-------------------------------------------------
+;-------------------------------------------------
+;五重绝顶（C+V+A+B+M全部同时高潮）
+;-------------------------------------------------
+IF NOWEX:五重绝顶
+    PRINTFORML 
+    RETURN 1
+ENDIF
+
+;-------------------------------------------------
+;四重绝顶（4个部位同时高潮）
+;-------------------------------------------------
+IF NOWEX:四重绝顶
+    IF FLAG:70
+    ELSE
+    ENDIF
+    RETURN 1
+ENDIF
+
+;-------------------------------------------------
+;三重绝顶（3个部位同时高潮）
+;-------------------------------------------------
+IF NOWEX:三重绝顶
+   IF FLAG:70
+    ELSE
+    ENDIF
+    RETURN 1
+ENDIF
+
+;-------------------------------------------------
+;二重绝顶（2个部位同时高潮）
+;-------------------------------------------------
+IF NOWEX:二重绝顶
+    IF FLAG:70
+    ELSE
+    ENDIF
+    RETURN 1
+ENDIF
+
+;-------------------------------------------------
+;C绝顶（阴蒂高潮）
+;强度：超强(=3) / 强(=2) / 普通(=1)
+;-------------------------------------------------
+IF NOWEX:Ｃ绝顶
+    IF NOWEX:Ｃ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ｃ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;-------------------------------------------------
+;V绝顶（阴道高潮）
+;强度：超强(=3) / 强(=2) / 普通(=1)
+;-------------------------------------------------
+IF NOWEX:Ｖ绝顶
+    IF NOWEX:Ｖ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ｖ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;-------------------------------------------------
+;A绝顶（肛门高潮）
+;强度：超强(=3) / 强(=2) / 普通(=1)
+;-------------------------------------------------
+IF NOWEX:Ａ绝顶
+    IF NOWEX:Ａ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ａ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;-------------------------------------------------
+;B绝顶（胸部高潮）
+;强度：超强(=3) / 强(=2) / 普通(=1)
+;-------------------------------------------------
+IF NOWEX:Ｂ绝顶
+    IF NOWEX:Ｂ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ｂ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;-------------------------------------------------
+;M绝顶（精神高潮/心理高潮）
+;强度：超强(=3) / 强(=2) / 普通(=1)
+;-------------------------------------------------
+IF NOWEX:Ｍ绝顶
+    IF NOWEX:Ｍ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ｍ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;==================================================
+;对象睡眠中的高潮口上（睡眠奸）
+;@KOJO_MESSAGE_SEND中PALAM类型CASE 2自动调用（恶作剧时）
+;==================================================
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_B2_K24
+#LOCALSIZE 1
+#LOCALSSIZE 1
+
+;-------------------------------------------------
+;喷乳
+;-------------------------------------------------
+IF NOWEX:喷乳
+    PRINTFORML 
+ENDIF
+
+;-------------------------------------------------
+;射精
+;-------------------------------------------------
+IF NOWEX:射精
+    PRINTFORML 
+ENDIF
+
+;-------------------------------------------------
+;放尿
+;-------------------------------------------------
+IF NOWEX:放尿
+    PRINTFORML 
+ENDIF
+
+;-------------------------------------------------
+;C绝顶（阴蒂高潮）
+;-------------------------------------------------
+IF NOWEX:Ｃ绝顶
+    IF NOWEX:Ｃ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ｃ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;-------------------------------------------------
+;V绝顶（阴道高潮）
+;-------------------------------------------------
+IF NOWEX:Ｖ绝顶
+    IF NOWEX:Ｖ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ｖ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;-------------------------------------------------
+;A绝顶（肛门高潮）
+;-------------------------------------------------
+IF NOWEX:Ａ绝顶
+    IF NOWEX:Ａ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ａ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;-------------------------------------------------
+;B绝顶（胸部高潮）
+;-------------------------------------------------
+IF NOWEX:Ｂ绝顶
+    IF NOWEX:Ｂ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ｂ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;-------------------------------------------------
+;M绝顶（精神高潮）
+;-------------------------------------------------
+IF NOWEX:Ｍ绝顶
+    IF NOWEX:Ｍ绝顶 == 3
+        PRINTFORML 
+    ELSEIF NOWEX:Ｍ绝顶 == 2
+        PRINTFORML 
+    ELSE
+        PRINTFORML 
+    ENDIF
+ENDIF
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;==================================================
+;玩家射精时的口上（Player系）
+;==================================================
+;-------------------------------------------------
+;射精部位：非TARGET（射精对象不是当前TARGET）
+;由TCVAR:50（口上输出用射精部位）Bit位判断调用
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_00(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+;情景文本PALAM_MESSAGE_A已由@KOJO_MESSAGE_SEND统一调用
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：避孕套（TCVAR:50 Bit 0）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_0(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：膣内（TCVAR:50 Bit 1）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_1(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：肛内（TCVAR:50 Bit 2）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_2(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：手淫（TCVAR:50 Bit 3）
+;指令名称：手淫（COM80）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_3(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：口淫（TCVAR:50 Bit 4）
+;指令名称：口交（COM81）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_4(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：乳交（TCVAR:50 Bit 5）
+;指令名称：乳交（COM82）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_5(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：素股（TCVAR:50 Bit 6）
+;指令名称：素股（COM83）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_6(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：足交（TCVAR:50 Bit 7）
+;指令名称：足交（COM85）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_7(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：泡泡浴（TCVAR:50 Bit 8）
+;指令名称：泡泡浴（COM84）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_8(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：肛门侍奉（TCVAR:50 Bit 9）
+;指令名称：肛门侍奉（COM1145）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_9(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：手淫口交（TCVAR:50 Bit 20）
+;指令名称：手淫口交（COM1505）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_20(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：乳夹口交（TCVAR:50 Bit 21）
+;指令名称：乳夹口交（COM1512）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_21(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：六九式（TCVAR:50 Bit 22）
+;指令名称：六九式（COM1501）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_22(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+;同时射精
+IF NOWEX:射精 && NOWEX:MASTER:射精
+    PRINTFORML 
+    RETURN 1
+;只有TARGET射精
+ELSEIF NOWEX:射精
+    ;PLAYER有阴茎
+    IF GETBIT(TALENT:PLAYER:性别,1)
+        PRINTFORML 
+        RETURN 1
+    ;PLAYER没有阴茎
+    ELSE
+        PRINTFORML 
+        RETURN 1
+    ENDIF
+;只有PLAYER射精
+ELSE
+    ;TARGET有阴茎
+    IF GETBIT(TALENT:性别,1)
+        PRINTFORML 
+        RETURN 1
+    ;TARGET没有阴茎
+    ELSE
+        PRINTFORML 
+        RETURN 1
+    ENDIF
+ENDIF
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：深喉插入（TCVAR:50 Bit 23）
+;指令名称：深喉插入（COM1140）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_23(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：授乳PLAY（TCVAR:50 Bit 26）
+;指令名称：授乳PLAY（COM1519）
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A_K24_26(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;==================================================
+;睡眠中玩家射精时的口上（睡眠奸 + Player系）
+;==================================================
+;-------------------------------------------------
+;射精部位：避孕套 - 睡眠中
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A2_K24_0(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：膣内 - 睡眠中
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A2_K24_1(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：肛内 - 睡眠中
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A2_K24_2(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：手淫 - 睡眠中
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A2_K24_3(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：口淫 - 睡眠中
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A2_K24_4(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：乳交 - 睡眠中
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A2_K24_5(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：足交 - 睡眠中
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A2_K24_7(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;-------------------------------------------------
+;射精部位：深喉插入 - 睡眠中
+;-------------------------------------------------
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_A2_K24_23(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
+
+;==================================================
+;挑逗时的口上
+;@KOJO_MESSAGE_SEND中PALAM类型CASE 6自动调用
+;==================================================
+@M_KOJO_MOKA_MESSAGE_PALAMCNG_F_K24(ARG)
+#LOCALSIZE 1
+#LOCALSSIZE 1
+PRINTFORML 
+
+;未成功调用文本，需要返回0
+RETURN 0
