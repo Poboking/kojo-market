@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "kind": "kojo-pack",
+  "id": "moka-chen",
+  "version": "0.0.5",
+  "name": "摩卡橙-小小八云之梦口上",
+  "author": "摩卡魔卡么么卡",
+  "license": "许可表原文照录（同梱 license.txt）：单独本体再次上传 ○ / 收录到整合版本 ○ / 口上加笔·改変 △（要相談）/ 商用及金钱相关 × / 二次创作 ○；○ 行为谁都可无断进行，不违反不撤回许可（license.txt:8-9、:62-90）",
+  "redistribute": true,
+  "summary": "橙（小小八云之梦）口上 ver0.05，eraTheWorld 4.903 别人版口上。来源 Poboking/kojo-community 整合内容/摩卡橙ver0.05，字节级未改。",
+  "minAppVersion": "0.2.46",
+  "gameId": "eraTW",
+  "files": [
+    {
+      "path": "files/M_KOJO_K24_2_COUNTER系.ERB",
+      "bytes": 119300,
+      "sha256": "64c1a1760ec9d04ebccbf557407f5d43580e576b85540872a2e304c0181173ab"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_事件系.ERB",
+      "bytes": 348899,
+      "sha256": "68e2c055448e4839ee1cc24d95c7ddcd047faae92561c9a253709b802b6bb887"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_侍奉系指令.ERB",
+      "bytes": 10066,
+      "sha256": "ef48873672ddf853288412bfc6de26be6537ac77ba1c026a6ebf381e3ec79e91"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_依頼.ERB",
+      "bytes": 32928,
+      "sha256": "15d29ebb31a42ac911d9f0d83a310f8ed092a8ba10c0baede4ecea45b9c7e780"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_刻印取得.ERB",
+      "bytes": 7395,
+      "sha256": "4617d3749f8593c5c95aa285d85999086ee4f08f669a006e22357ca3b58249de"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_弾幕勝負.ERB",
+      "bytes": 41960,
+      "sha256": "f70fa640999f880ebd3b5d6bcb582d0f27740c071c051f998de8fe2052861ab8"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_性交系指令.ERB",
+      "bytes": 22958,
+      "sha256": "933689e66b58f7e4c5a527a8303c5bf0a4d1969cc17705b0ced36a0c2fceada9"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_性骚扰指令.ERB",
+      "bytes": 243400,
+      "sha256": "ee4d238367812d3f4941c16a08c42cd7e988a03bf54ae9c8eb40ef48fc342d01"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_日常系指令.ERB",
+      "bytes": 621363,
+      "sha256": "53a63b2f6dc26d4bf74c5b8739c01a4be4c239c6b9a532ca0891b99773893970"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_爱抚系指令.ERB",
+      "bytes": 37737,
+      "sha256": "df1eb6257ea05367ce1ec4c3110c8f72c5b3716ec532861d6a5ce4dc5ab6c221"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_硬核系指令.ERB",
+      "bytes": 11453,
+      "sha256": "df485cd80638107ea5c009a45412146bf1c232eb0610207931dab3dd0d42374d"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_自定义函数.ERB",
+      "bytes": 126695,
+      "sha256": "a9b7eb5989f840e8f43ec441bdb876396a4e2721661f5eb88ee29492011d6044"
+    },
+    {
+      "path": "files/M_KOJO_K24_2_高潮（详细版）.ERB",
+      "bytes": 20874,
+      "sha256": "75d17cb73ea6f6638ced65247ea5444ededf20fd4efbe8e513a7c182fa5cd1af"
+    },
+    {
+      "path": "files/license.txt",
+      "bytes": 6165,
+      "sha256": "e761893f6581d16f6cb85308862cee2f03202ae6eac63eba716b1b4958a45f36"
+    },
+    {
+      "path": "files/note.txt",
+      "bytes": 2898,
+      "sha256": "cd369a0572054d897c5b9350b3aa7dd1c86879c21639ffa561c40e74b2f94548"
+    },
+    {
+      "path": "files/作者的话(readme).txt",
+      "bytes": 1107,
+      "sha256": "ab96e812a757b930210e3e8cb94361fdfb0acae3fee2aebbd19e43940398f0f3"
+    },
+    {
+      "path": "files/口上记录.txt",
+      "bytes": 3498,
+      "sha256": "bd92e353f5d9b1b2a508b2180b66dc6e6c384242f39412e399404c896f214c9d"
+    },
+    {
+      "path": "files/更新日志.txt",
+      "bytes": 1122,
+      "sha256": "93b14250991038738c15da9ad4ea25ce3bf9cc3861676aa2de53f3c7f4580544"
+    }
+  ]
+}
