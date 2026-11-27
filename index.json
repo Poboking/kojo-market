@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-11-17T09:22:19.000Z",
+  "generatedAt": "2026-11-27T18:15:15.000Z",
   "packs": [
     {
       "kind": "dict-pack",
@@ -104,6 +104,24 @@
       },
       "fileCount": 10,
       "unpackedBytes": 13133
+    },
+    {
+      "kind": "kojo-pack",
+      "id": "moka-chen",
+      "version": "0.0.5",
+      "name": "摩卡橙-小小八云之梦口上",
+      "author": "摩卡魔卡么么卡",
+      "license": "许可表原文照录（同梱 license.txt）：单独本体再次上传 ○ / 收录到整合版本 ○ / 口上加笔·改変 △（要相談）/ 商用及金钱相关 × / 二次创作 ○；○ 行为谁都可无断进行，不违反不撤回许可（license.txt:8-9、:62-90）",
+      "summary": "橙（小小八云之梦）口上 ver0.05，eraTheWorld 4.903 别人版口上。来源 Poboking/kojo-community 整合内容/摩卡橙ver0.05，字节级未改。",
+      "minAppVersion": "0.2.46",
+      "gameId": "eraTW",
+      "zip": {
+        "url": "https://github.com/Poboking/kojo-market/releases/download/moka-chen-v0.0.5/moka-chen-0.0.5.zip",
+        "sha256": "239605d287e26e526844ba91c39b3e4d643bca3ea415a25ab03a726f0f1ed4ad",
+        "bytes": 446726
+      },
+      "fileCount": 18,
+      "unpackedBytes": 1659818
     }
   ]
 }
